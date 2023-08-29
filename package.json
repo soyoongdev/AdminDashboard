@@ -1,7 +1,7 @@
 {
-  "name": "v5t-api",
+  "name": "AdminDashboard",
   "version": "1.0.0",
-  "description": "This is project development for creating api for v5t company website.",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "dev": "npx nodemon",
@@ -12,7 +12,7 @@
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write ."
   },
-  "repository": "https://github.com/V5Ts/v5t-api.git",
+  "repository": "https://github.com/soyoongdev/AdminDashboard.git",
   "author": "soyoong <huuhau.hh47@gmail.com>",
   "license": "MIT",
   "private": true,
