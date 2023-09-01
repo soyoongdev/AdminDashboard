@@ -1,5 +1,5 @@
 {
-  "name": "AdminDashboard",
+  "name": "admindashboard-backend",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -11,7 +11,7 @@
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write ."
   },
-  "repository": "https://github.com/soyoongdev/AdminDashboard.git",
+  "repository": "https://github.com/soyoongdev/admindashboard-backend.git",
   "author": "soyoong <huuhau.hh47@gmail.com>",
   "license": "MIT",
   "private": true,
