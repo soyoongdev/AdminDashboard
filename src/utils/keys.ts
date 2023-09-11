@@ -3,7 +3,10 @@ dotenv.config()
 
 export default {
   port: process.env.PORT || 9001,
-  mongodb: {
-    url: process.env.MONGO_URL || ''
+  mysql: {
+    host: process.env.HOST || 'localhost',
+    dbname: process.env.DB_NAME || 'shopair',
+    username: process.env.DB_USERNAME || 'root',
+    password: process.env.DB_PASSWORD || 'root@123'
   }
 }
