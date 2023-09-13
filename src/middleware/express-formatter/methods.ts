@@ -1,133 +1,114 @@
-import { Request, Response } from 'express'
-
 export type MethodType =
-  | 'ok'
-  | 'created'
-  | 'accepted'
-  | 'noContent'
-  | 'badRequest'
-  | 'unauthorized'
-  | 'forbidden'
-  | 'notFound'
-  | 'methodNotAllowed'
-  | 'timeout'
-  | 'conflict'
-  | 'unprocess'
-  | 'tooManyRequests'
-  | 'serverError'
-  | 'badGateway'
-  | 'serviceUnavailable'
-  | 'gatewayTimeout'
+  | 'Ok'
+  | 'Created'
+  | 'Accepted'
+  | 'No-Content'
+  | 'Bad-Request'
+  | 'Unauthorized'
+  | 'Forbidden'
+  | 'Not-Found'
+  | 'Method-Not-Allowed'
+  | 'Timeout'
+  | 'Conflict'
+  | 'Unprocessed'
+  | 'Too-Many-Requests'
+  | 'Server-Error'
+  | 'Bad-Gateway'
+  | 'Service-Unavailable'
+  | 'Gateway-Timeout'
+
+export type MethodStatus =
+  | 200
+  | 201
+  | 202
+  | 204
+  | 400
+  | 401
+  | 403
+  | 404
+  | 405
+  | 408
+  | 409
+  | 422
+  | 429
+  | 500
+  | 502
+  | 503
+  | 504
 
 export interface Method {
-  name: MethodType
-  code: string
-  message: string
-  isSuccess: boolean
+  status: MethodStatus
+  type: MethodType
 }
 
 const methods: Method[] = [
   {
-    name: 'ok',
-    code: '200',
-    message: 'OK',
-    isSuccess: true
+    status: 200,
+    type: 'Ok'
   },
   {
-    name: 'created',
-    code: '201',
-    message: 'Created',
-    isSuccess: true
+    type: 'Created',
+    status: 201
   },
   {
-    name: 'accepted',
-    code: '202',
-    message: 'Accepted',
-    isSuccess: true
+    type: 'Accepted',
+    status: 202
   },
   {
-    name: 'noContent',
-    code: '204',
-    message: 'No Content',
-    isSuccess: true
+    type: 'No-Content',
+    status: 204
   },
   {
-    name: 'badRequest',
-    code: '400',
-    message: 'Bad Request',
-    isSuccess: false
+    type: 'Bad-Request',
+    status: 400
   },
   {
-    name: 'unauthorized',
-    code: '401',
-    message: 'Unauthorized',
-    isSuccess: false
+    type: 'Unauthorized',
+    status: 401
   },
   {
-    name: 'forbidden',
-    code: '403',
-    message: 'Forbidden',
-    isSuccess: false
+    type: 'Forbidden',
+    status: 403
   },
   {
-    name: 'notFound',
-    code: '404',
-    message: 'Not Found',
-    isSuccess: false
+    type: 'Not-Found',
+    status: 404
   },
   {
-    name: 'methodNotAllowed',
-    code: '405',
-    message: 'Method Not Allowed',
-    isSuccess: false
+    type: 'Method-Not-Allowed',
+    status: 405
   },
   {
-    name: 'timeout',
-    code: '408',
-    message: 'Timeout',
-    isSuccess: false
+    type: 'Timeout',
+    status: 408
   },
   {
-    name: 'conflict',
-    code: '409',
-    message: 'Conflict',
-    isSuccess: false
+    type: 'Conflict',
+    status: 409
   },
   {
-    name: 'unprocess',
-    code: '422',
-    message: 'Unprocessable Entity',
-    isSuccess: false
+    type: 'Unprocessed',
+    status: 422
   },
   {
-    name: 'tooManyRequests',
-    code: '429',
-    message: 'Too Many Requests',
-    isSuccess: false
+    type: 'Too-Many-Requests',
+    status: 429
   },
   {
-    name: 'serverError',
-    code: '500',
-    message: 'Internal Server Error',
-    isSuccess: false
+    type: 'Server-Error',
+    status: 500
   },
   {
-    name: 'badGateway',
-    code: '502',
-    message: 'Bad Gateway',
-    isSuccess: false
+    type: 'Bad-Gateway',
+    status: 502
   },
   {
-    name: 'serviceUnavailable',
-    code: '503',
-    message: 'Service Unavailable',
-    isSuccess: false
+    type: 'Service-Unavailable',
+    status: 503
   },
   {
-    name: 'gatewayTimeout',
-    code: '504',
-    message: 'Gateway Timeout',
-    isSuccess: false
+    type: 'Gateway-Timeout',
+    status: 504
   }
 ]
 

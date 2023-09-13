@@ -1,8 +1,8 @@
-import express from 'express'
-import * as logging from '~/utils/logging'
+import { Router } from 'express'
 import userRoute from '~/routes/user.route'
+import * as logging from '~/utils/logging'
 
-const router = express.Router()
+const router = Router()
 const NAMESPACE = 'routes/index'
 
 router.use('/users', userRoute)

@@ -9,7 +9,7 @@ export const getByID = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const user = await UserSchema.findByPk(id)
-    return res.formatter.ok(user)
+    return res.formatter[200](user)
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     return res.formatter.badRequest(error)

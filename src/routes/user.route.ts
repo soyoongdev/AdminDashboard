@@ -1,7 +1,7 @@
-import express from 'express'
+import { Router } from 'express'
 import * as controller from '~/controllers/user.controller'
 
-const router = express.Router()
+const router = Router()
 
 router.get('/find/:id', controller.getByID)
 router.post('/find', controller.getAll)

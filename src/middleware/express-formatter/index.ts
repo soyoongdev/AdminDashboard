@@ -1,7 +1,7 @@
-import { Express, Request, Response, NextFunction } from 'express'
-import methods, { MethodType, Method } from './methods'
+import { NextFunction, Request, Response } from 'express'
+import methods, { Method, MethodStatus } from './methods'
 
-type ResponseFunction = { [key in MethodType]: (data: any, meta?: any) => void }
+type ResponseFunction = { [key in MethodStatus]: (status: number, message: string, meta?: any) => void }
 
 declare global {
   namespace Express {
@@ -23,38 +23,23 @@ const _generateFormatters = (res: Response) => {
   let responseBody = {}
 
   methods.map((method: Method) => {
-    if (method.isSuccess) {
-      formatter[method.name] = (data: any, meta: any) => {
-        responseBody = _generateSuccessResponse({ data, meta })
-        res.status(parseInt(method.code)).json(responseBody)
-      }
-    } else {
-      formatter[method.name] = (error: any, meta: any) => {
-        responseBody = _generateErrorResponse({ error, meta })
-        res.status(parseInt(method.code)).json(responseBody)
-      }
+    formatter[method.status] = (status: number, message: string, meta?: any) => {
+      responseBody = _generateResponseStory({ status, message, meta })
+      res.status(method.status).json(responseBody)
     }
   })
 
   return formatter
 }
 
-interface SuccessInput {
-  data: any
+interface ResponseStory {
+  status: number
+  message: string
   meta: any
 }
 
-const _generateSuccessResponse = ({ data, meta }: SuccessInput) => ({
-  data,
-  meta
-})
-
-interface ErrorsInput {
-  error: any
-  meta: any
-}
-
-const _generateErrorResponse = ({ error, meta }: ErrorsInput) => ({
-  error,
+const _generateResponseStory = ({ status, message, meta }: ResponseStory) => ({
+  status,
+  message,
   meta
 })

@@ -1,15 +1,13 @@
-import express from 'express'
+import cors from 'cors'
+import express, { Express } from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import cors from 'cors'
-import mongoose from 'mongoose'
+import { responseEnhancer } from './middleware/express-formatter'
 import routes from './routes'
 import keys from './utils/keys'
 import * as logging from './utils/logging'
-import { sequelize } from './config/database'
-import { responseEnhancer } from './middleware/express-formatter'
 
-const app = express()
+const app: Express = express()
 const NAMESPACE = 'APP'
 
 app.use(express.json())
