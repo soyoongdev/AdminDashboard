@@ -7,15 +7,17 @@ import routes from '~/api/v1/routes'
 
 const app: Express = express()
 
+// Accept json body request
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-// Helmet helps secure Express apps by setting HTTP response headers.
+// (helmet) helps secure Express apps by setting HTTP response headers.
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }))
-// HTTP request logger middleware for node.js
+// (morgan) HTTP request logger middleware for node.js
 app.use(morgan('dev'))
+// (cors) Provide some options Headers for accept others localhost to allow request
 app.use(cors())
-// Formatter response express middleware for node.js
+// Handle custom formatter response express (middleware)
 app.use(responseEnhancer())
 
 /* ROUTES */

@@ -1,9 +1,23 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '~/config/database.config'
 
 const { STRING, INTEGER } = DataTypes
 
-const UserSchema = sequelize.define(
+export interface User {
+  userID?: number
+  roleID: number
+  username: string
+  fullname?: string
+  email: string
+  password: string
+  avatar?: string
+  phone?: string
+  address?: string
+  birthday?: string
+  orderNumber: number
+}
+
+const UserSchema = sequelize.define<Model<User>>(
   'user',
   {
     userID: {
@@ -32,6 +46,9 @@ const UserSchema = sequelize.define(
   }
 )
 
+// Define associations
+
+// Function to synchronize a model
 ;(async () => {
   await UserSchema.sync()
 })()
