@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import logEvent from '~/helpers/log-event'
-import userRoute from '~/routes/user.route'
-import logging from '~/utils/logging'
+import logEvent from '~/api/v1/helpers/log-event'
+import userRoute from '~/api/v1/routes/user.route'
+import logging from '~/api/v1/utils/logging'
 
 const router = Router()
 const NAMESPACE = 'routes/index'

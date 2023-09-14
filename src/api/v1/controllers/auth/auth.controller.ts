@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import logging from '~/utils/logging'
+import logging from '~/api/v1/utils/logging'
 
 const NAMESPACE = '[controller/auth]'
 

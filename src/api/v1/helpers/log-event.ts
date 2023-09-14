@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import fs from 'fs'
-import logging from '~/utils/logging'
+import logging from '~/api/v1/utils/logging'
 
 const NAMESPACE = 'helpers/log-event'
 

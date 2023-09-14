@@ -2,13 +2,10 @@ import cors from 'cors'
 import express, { Express } from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import { responseEnhancer } from './middleware/express-formatter'
-import routes from './routes'
-import keys from './utils/keys'
-import logging from './utils/logging'
+import { responseEnhancer } from '~/api/v1/middleware/express-formatter'
+import routes from '~/api/v1/routes'
 
 const app: Express = express()
-const NAMESPACE = 'APP'
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -24,10 +21,4 @@ app.use(responseEnhancer())
 /* ROUTES */
 app.use('/api', routes)
 
-try {
-  app.listen(keys.port, () => {
-    logging.info(NAMESPACE, 'Server is running..')
-  })
-} catch (error) {
-  logging.error(NAMESPACE, `${error}`)
-}
+export default app

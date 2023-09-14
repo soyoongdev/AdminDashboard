@@ -1,3 +1,5 @@
+// Using this code or using library npm 'http-errors'
+
 export type MethodType =
   | 'ok'
   | 'created'

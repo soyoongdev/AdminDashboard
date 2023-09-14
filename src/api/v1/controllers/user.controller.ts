@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import logEvent from '~/helpers/log-event'
-import UserSchema from '~/models/user.model'
-import logging from '~/utils/logging'
+import logEvent from '~/api/v1/helpers/log-event'
+import UserSchema from '~/api/v1/models/user.model'
+import logging from '~/api/v1/utils/logging'
 
 const NAMESPACE = '[controller/user]'
 
