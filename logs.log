@@ -1,0 +1,3 @@
+'Hàm update (put) user dùng trong postman 
+thì được nhưng dùng với http client (rest 
+api VSCode Extension) thì không được (không đúng)'

@@ -1,15 +1,17 @@
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
+import logEvent from '~/helpers/log-event'
 import userRoute from '~/routes/user.route'
-import * as logging from '~/utils/logging'
+import logging from '~/utils/logging'
 
 const router = Router()
 const NAMESPACE = 'routes/index'
 
 router.use('/users', userRoute)
 
-router.use((_, res) => {
-  res.status(404).send('<h1>Wrong Route!</h1>').end()
-  logging.error(NAMESPACE, 'Wrong route with error: ' + res.statusMessage)
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  logEvent(err.message)
+  logging.error(NAMESPACE, 'Not found with error: ' + err.message)
+  return res.formatter.notFound()
 })
 
 export default router

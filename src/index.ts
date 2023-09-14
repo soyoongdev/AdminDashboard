@@ -5,7 +5,7 @@ import morgan from 'morgan'
 import { responseEnhancer } from './middleware/express-formatter'
 import routes from './routes'
 import keys from './utils/keys'
-import * as logging from './utils/logging'
+import logging from './utils/logging'
 
 const app: Express = express()
 const NAMESPACE = 'APP'
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }))
 // HTTP request logger middleware for node.js
-app.use(morgan('common'))
+app.use(morgan('dev'))
 app.use(cors())
 // Formatter response express middleware for node.js
 app.use(responseEnhancer())

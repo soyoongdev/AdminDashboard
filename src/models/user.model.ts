@@ -13,18 +13,17 @@ const UserSchema = sequelize.define(
     },
 
     roleID: {
-      type: INTEGER,
-      allowNull: true
+      type: INTEGER
     },
     username: {
-      type: STRING,
-      allowNull: true
+      type: STRING
     },
     fullname: { type: STRING, allowNull: true },
-    email: { type: STRING, allowNull: true },
-    password: { type: STRING, allowNull: true },
+    email: { type: STRING },
+    password: { type: STRING },
     avatar: { type: STRING, allowNull: true },
     phone: { type: STRING, allowNull: true },
+    address: { type: STRING },
     birthday: { type: STRING, allowNull: true },
     orderNumber: { type: INTEGER, defaultValue: 0 }
   },

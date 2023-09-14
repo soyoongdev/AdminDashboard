@@ -1,21 +1,21 @@
 export type MethodType =
-  | 'Ok'
-  | 'Created'
-  | 'Accepted'
-  | 'No-Content'
-  | 'Bad-Request'
-  | 'Unauthorized'
-  | 'Forbidden'
-  | 'Not-Found'
-  | 'Method-Not-Allowed'
-  | 'Timeout'
-  | 'Conflict'
-  | 'Unprocessed'
-  | 'Too-Many-Requests'
-  | 'Server-Error'
-  | 'Bad-Gateway'
-  | 'Service-Unavailable'
-  | 'Gateway-Timeout'
+  | 'ok'
+  | 'created'
+  | 'accepted'
+  | 'noContent'
+  | 'badRequest'
+  | 'unauthorized'
+  | 'forbidden'
+  | 'notFound'
+  | 'methodNotAllowed'
+  | 'timeout'
+  | 'conflict'
+  | 'unprocessed'
+  | 'tooManyRequests'
+  | 'serverError'
+  | 'badGateway'
+  | 'serviceUnavailable'
+  | 'gatewayTimeout'
 
 export type MethodStatus =
   | 200
@@ -38,77 +38,95 @@ export type MethodStatus =
 
 export interface Method {
   status: MethodStatus
+  message: string
   type: MethodType
 }
 
 const methods: Method[] = [
   {
+    type: 'ok',
     status: 200,
-    type: 'Ok'
+    message: 'Ok'
   },
   {
-    type: 'Created',
-    status: 201
+    type: 'created',
+    status: 201,
+    message: 'Created'
   },
   {
-    type: 'Accepted',
-    status: 202
+    type: 'accepted',
+    status: 202,
+    message: 'Accepted'
   },
   {
-    type: 'No-Content',
-    status: 204
+    type: 'noContent',
+    status: 204,
+    message: 'No Content'
   },
   {
-    type: 'Bad-Request',
-    status: 400
+    type: 'badRequest',
+    status: 400,
+    message: 'Bad Request'
   },
   {
-    type: 'Unauthorized',
-    status: 401
+    type: 'unauthorized',
+    status: 401,
+    message: 'Unauthorized'
   },
   {
-    type: 'Forbidden',
-    status: 403
+    type: 'forbidden',
+    status: 403,
+    message: 'Forbidden'
   },
   {
-    type: 'Not-Found',
-    status: 404
+    type: 'notFound',
+    status: 404,
+    message: 'Not Found'
   },
   {
-    type: 'Method-Not-Allowed',
-    status: 405
+    type: 'methodNotAllowed',
+    status: 405,
+    message: 'Method not allowed!'
   },
   {
-    type: 'Timeout',
-    status: 408
+    type: 'timeout',
+    status: 408,
+    message: 'timeout'
   },
   {
-    type: 'Conflict',
-    status: 409
+    type: 'conflict',
+    status: 409,
+    message: 'Conflict'
   },
   {
-    type: 'Unprocessed',
-    status: 422
+    type: 'unprocessed',
+    status: 422,
+    message: 'Unprocessed'
   },
   {
-    type: 'Too-Many-Requests',
-    status: 429
+    type: 'tooManyRequests',
+    status: 429,
+    message: 'Too many requests'
   },
   {
-    type: 'Server-Error',
-    status: 500
+    type: 'serverError',
+    status: 500,
+    message: 'Server error'
   },
   {
-    type: 'Bad-Gateway',
-    status: 502
+    type: 'badGateway',
+    status: 502,
+    message: 'Bad Gateway'
   },
   {
-    type: 'Service-Unavailable',
-    status: 503
+    type: 'serviceUnavailable',
+    status: 503,
+    message: 'Service Unavailable'
   },
   {
-    type: 'Gateway-Timeout',
-    status: 504
+    type: 'gatewayTimeout',
+    status: 504,
+    message: 'Gateway Timeout'
   }
 ]
 

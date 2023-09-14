@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import methods, { Method, MethodStatus } from './methods'
+import methods, { Method, MethodType } from './methods'
 
-type ResponseFunction = { [key in MethodStatus]: (status: number, message: string, meta?: any) => void }
+type ResponseFunction = {
+  [key in MethodType]: (data?: any | undefined, meta?: any | undefined, message?: string | undefined) => void
+}
 
 declare global {
   namespace Express {
@@ -23,8 +25,13 @@ const _generateFormatters = (res: Response) => {
   let responseBody = {}
 
   methods.map((method: Method) => {
-    formatter[method.status] = (status: number, message: string, meta?: any) => {
-      responseBody = _generateResponseStory({ status, message, meta })
+    formatter[method.type] = (data?: any, meta?: any, message?: string | undefined) => {
+      responseBody = _generateResponseStory({
+        status: method.status,
+        message: message === undefined ? method.message : message,
+        data: data,
+        meta: meta
+      })
       res.status(method.status).json(responseBody)
     }
   })
@@ -32,14 +39,17 @@ const _generateFormatters = (res: Response) => {
   return formatter
 }
 
+// Custom response here!!!!
 interface ResponseStory {
   status: number
-  message: string
-  meta: any
+  message?: string | undefined
+  data?: any
+  meta?: any
 }
 
-const _generateResponseStory = ({ status, message, meta }: ResponseStory) => ({
+const _generateResponseStory = ({ status, message, data, meta }: ResponseStory) => ({
   status,
   message,
+  data,
   meta
 })

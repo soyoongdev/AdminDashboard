@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
+import logEvent from '~/helpers/log-event'
 import UserSchema from '~/models/user.model'
-import * as logging from '~/utils/logging'
+import logging from '~/utils/logging'
 
 const NAMESPACE = '[controller/user]'
 
@@ -9,10 +10,11 @@ export const getByID = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const user = await UserSchema.findByPk(id)
-    return res.formatter[200](user)
+    return res.formatter.ok(user, null)
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    return res.formatter.badRequest(error)
+    logEvent(`${error}`)
+    return res.formatter.badRequest('error')
   }
 }
 
@@ -20,18 +22,20 @@ export const getByID = async (req: Request, res: Response) => {
 export const getAll = async (req: Request, res: Response) => {
   try {
     const user = await UserSchema.findAll()
-    res.formatter.ok(user, { total: user.length })
+    return res.formatter.ok(user, { total: user.length })
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    res.formatter.badRequest(error)
+    logEvent(`${error}`)
+    return res.formatter.badRequest(error)
   }
 }
 
 // Create new
 export const createNew = async (req: Request, res: Response) => {
-  const { username, fullname, email, password, avatar, phone, birthday, roleID } = req.body
+  const { username, fullname, email, password, avatar, phone, address, birthday, roleID, orderNumber } = req.body
 
   try {
+    const length = (await UserSchema.findAll()).length
     const newUser = await UserSchema.create({
       roleID: roleID,
       username: username,
@@ -40,12 +44,15 @@ export const createNew = async (req: Request, res: Response) => {
       password: password,
       avatar: avatar,
       phone: phone,
-      birthday: birthday
+      address: address,
+      birthday: birthday,
+      orderNumber: length
     })
-    res.formatter.created(newUser)
+    return res.formatter.created(newUser)
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    res.formatter.badRequest(error)
+    logEvent(`${error}`)
+    return res.formatter.badRequest(error)
   }
 }
 
@@ -56,7 +63,7 @@ export const updateByID = async (req: Request, res: Response) => {
   try {
     const user = await UserSchema.findByPk(id)
     if (user === null) {
-      return res.formatter.notFound('User not found')
+      return res.formatter.notFound(null, { message: 'User not found' })
     } else {
       user.set({
         roleID: roleID,
@@ -75,6 +82,7 @@ export const updateByID = async (req: Request, res: Response) => {
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
+    logEvent(`${error}`)
     return res.formatter.badRequest(error)
   }
 }
@@ -85,13 +93,14 @@ export const deleteByID = async (req: Request, res: Response) => {
   try {
     const user = await UserSchema.findByPk(id)
     if (user === null) {
-      return res.formatter.notFound('User not found')
+      return res.formatter.notFound(null, null, 'User not found')
     } else {
       await user.destroy()
       return res.formatter.ok(user)
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
+    logEvent(`${error}`)
     return res.formatter.badRequest(error)
   }
 }

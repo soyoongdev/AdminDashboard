@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize'
-// import * as tedious from 'tedious'
 import keys from '~/utils/keys'
-import * as logging from '~/utils/logging'
+import logging from '~/utils/logging'
 
 const NAMESPACE = '[config/database]'
 
@@ -40,4 +39,4 @@ const closeConnection = async () => {
   }
 }
 
-export { sequelize, createConnection, closeConnection }
+export { closeConnection, createConnection, sequelize }
