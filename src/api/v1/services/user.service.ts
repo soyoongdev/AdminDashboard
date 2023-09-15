@@ -18,7 +18,8 @@ export const createNewUser = async (user: User) => {
 // Get by id
 export const getUserByID = async (id: number) => {
   try {
-    return await UserSchema.findByPk(id)
+    const user = await UserSchema.findByPk(id)
+    return user
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${error}`)
@@ -39,6 +40,23 @@ export const getAllUsers = async () => {
 
 // Update
 export const updateUserByID = async (user: User) => {
+  try {
+    const userFind = await UserSchema.findByPk(user.userID)
+    if (!userFind) {
+      return null
+    } else {
+      userFind.set(user)
+      return await userFind.save()
+    }
+  } catch (error) {
+    logging.error(NAMESPACE, `${error}`)
+    logEvent(`${error}`)
+    throw error
+  }
+}
+
+// Partial update
+export const partialUpdateUserByID = async (user: User) => {
   try {
     const userFind = await UserSchema.findByPk(user.userID)
     if (!userFind) {

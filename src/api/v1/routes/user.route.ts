@@ -7,6 +7,7 @@ router.post('/', controller.createNew)
 router.get('/find/:id', controller.getByID)
 router.get('/find', controller.getAll)
 router.put('/:id', controller.updateByID)
+router.patch('/:id', controller.partialUpdateByID)
 router.delete('/:id', controller.deleteByID)
 
 export default router

@@ -1,7 +1,8 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '~/config/database.config'
+import { syncModel } from '.'
 
-const { STRING, INTEGER } = DataTypes
+const { INTEGER, STRING } = DataTypes
 
 export interface User {
   userID?: number
@@ -17,40 +18,28 @@ export interface User {
   orderNumber: number
 }
 
-const UserSchema = sequelize.define<Model<User>>(
-  'user',
-  {
-    userID: {
-      type: INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-
-    roleID: {
-      type: INTEGER
-    },
-    username: {
-      type: STRING
-    },
-    fullname: { type: STRING, allowNull: true },
-    email: { type: STRING },
-    password: { type: STRING },
-    avatar: { type: STRING, allowNull: true },
-    phone: { type: STRING, allowNull: true },
-    address: { type: STRING },
-    birthday: { type: STRING, allowNull: true },
-    orderNumber: { type: INTEGER, defaultValue: 0 }
+const UserSchema = sequelize.define<Model<User>>('User', {
+  userID: {
+    type: INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
-  {
-    timestamps: true
-  }
-)
+  roleID: {
+    type: INTEGER
+  },
+  username: {
+    type: STRING
+  },
+  fullname: { type: STRING, allowNull: true },
+  email: { type: STRING },
+  password: { type: STRING },
+  avatar: { type: STRING, allowNull: true },
+  phone: { type: STRING, allowNull: true },
+  address: { type: STRING },
+  birthday: { type: STRING, allowNull: true },
+  orderNumber: { type: INTEGER, defaultValue: 0 }
+})
 
-// Define associations
-
-// Function to synchronize a model
-;(async () => {
-  await UserSchema.sync()
-})()
+syncModel(UserSchema)
 
 export default UserSchema

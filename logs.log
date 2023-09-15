@@ -1,3 +1,4 @@
 'Hàm update (put) user dùng trong postman 
 thì được nhưng dùng với http client (rest 
-api VSCode Extension) thì không được (không đúng)'
+api VSCode Extension) thì không được (không đúng)'👉[UserID] [15/09/2023|09:70:15] : 'SequelizeConnectionRefusedError: connect ECONNREFUSED ::1:3306' 
+👉[UserID] [15/09/2023|09:14:15] : 'SequelizeConnectionRefusedError: connect ECONNREFUSED ::1:3306' 
