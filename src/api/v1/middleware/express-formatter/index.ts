@@ -1,8 +1,15 @@
 import { NextFunction, Request, Response } from 'express'
 import methods, { Method, MethodType } from './methods'
 
+export interface ResponseStory {
+  status?: number
+  message?: string
+  data?: any
+  meta?: any
+}
+
 type ResponseFunction = {
-  [key in MethodType]: (data?: any | undefined, meta?: any | undefined, message?: string | undefined) => void
+  [key in MethodType]: (response: ResponseStory) => void
 }
 
 declare global {
@@ -22,34 +29,42 @@ export const responseEnhancer =
 
 const _generateFormatters = (res: Response) => {
   const formatter = {} as ResponseFunction
-  let responseBody = {}
 
   methods.map((method: Method) => {
-    formatter[method.type] = (data?: any, meta?: any, message?: string | undefined) => {
-      responseBody = _generateResponseStory({
-        status: method.status,
-        message: message === undefined ? method.message : message,
-        data: data,
-        meta: meta
-      })
-      res.status(method.status).json(responseBody)
+    formatter[method.type] = (response: ResponseStory) => {
+      if (method.type === 'dynamicFind') {
+        const foundMethod = methods.find((m) => m.status === response.status)
+        if (foundMethod) {
+          _generateResponseStory(res, {
+            status: foundMethod.status,
+            message: response.message ? response.message : foundMethod.message,
+            data: response.data,
+            meta: response.meta
+          })
+        } else {
+          res.status(500).json({
+            status: 500,
+            message: 'Can not find the requested status method!'
+          })
+        }
+      } else {
+        _generateResponseStory(res, {
+          status: method.status,
+          message: response.message ? response.message : method.message,
+          data: response.data,
+          meta: response.meta
+        })
+      }
     }
   })
 
   return formatter
 }
 
-// Custom response here!!!!
-interface ResponseStory {
-  status: number
-  message?: string | undefined
-  data?: any
-  meta?: any
+const _generateResponseStory = (res: Response, story: ResponseStory) => {
+  if (story.status) {
+    res.status(story.status).json(story)
+  } else {
+    res.status(500).json({ status: 500, message: 'Generate body error!' })
+  }
 }
-
-const _generateResponseStory = ({ status, message, data, meta }: ResponseStory) => ({
-  status,
-  message,
-  data,
-  meta
-})

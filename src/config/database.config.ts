@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize'
-import keys from '~/api/v1/utils/keys'
-import logging from '~/api/v1/utils/logging'
+import keys from '~/v1/utils/keys'
+import logging from '~/v1/utils/logging'
 
 const NAMESPACE = '[config/database]'
 

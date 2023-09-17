@@ -1,6 +1,6 @@
-import logEvent from '../helpers/log-event'
-import UserSchema, { User } from '../models/user.model'
-import logging from '../utils/logging'
+import logEvent from '~/v1/helpers/log-event'
+import UserSchema, { User } from '~/v1/models/user.model'
+import logging from '~/v1/utils/logging'
 
 const NAMESPACE = '[services/user]'
 

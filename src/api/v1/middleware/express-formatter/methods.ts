@@ -18,6 +18,7 @@ export type MethodType =
   | 'badGateway'
   | 'serviceUnavailable'
   | 'gatewayTimeout'
+  | 'dynamicFind'
 
 export type MethodStatus =
   | 200
@@ -37,6 +38,7 @@ export type MethodStatus =
   | 502
   | 503
   | 504
+  | number
 
 export interface Method {
   status: MethodStatus
@@ -129,6 +131,11 @@ const methods: Method[] = [
     type: 'gatewayTimeout',
     status: 504,
     message: 'Gateway Timeout'
+  },
+  {
+    type: 'dynamicFind',
+    status: 0,
+    message: 'Dynamic find'
   }
 ]
 

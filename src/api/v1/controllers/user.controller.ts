@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { User } from '~/api/v1/models/user.model'
+import { User } from '~/v1/models/user.model'
 import {
   createNewUser,
   deleteUserByID,
@@ -7,7 +7,7 @@ import {
   getUserByID,
   partialUpdateUserByID,
   updateUserByID
-} from '~/api/v1/services/user.service'
+} from '~/v1/services/user.service'
 
 // Create new
 export const createNew = async (req: Request, res: Response) => {
@@ -25,9 +25,9 @@ export const createNew = async (req: Request, res: Response) => {
   }
   try {
     const newUser = await createNewUser(userRequest)
-    return res.formatter.created(newUser, null, 'User created')
+    return res.formatter.created({ data: newUser, message: 'User created' })
   } catch (error) {
-    return res.formatter.badRequest(error)
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
 // Get by id
@@ -35,9 +35,9 @@ export const getByID = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const user = await getUserByID(parseInt(id))
-    return res.formatter.ok(user, null, user ? 'User founded' : 'User not found')
+    return res.formatter.ok({ data: user, message: user ? 'User founded' : 'User not found' })
   } catch (error) {
-    return res.formatter.badRequest('error')
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
 
@@ -45,9 +45,9 @@ export const getByID = async (req: Request, res: Response) => {
 export const getAll = async (req: Request, res: Response) => {
   try {
     const users = await getAllUsers()
-    return res.formatter.ok(users, { total: users.length })
+    return res.formatter.ok({ data: users, meta: { total: users.length } })
   } catch (error) {
-    return res.formatter.badRequest(error)
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
 
@@ -71,12 +71,12 @@ export const updateByID = async (req: Request, res: Response) => {
   try {
     const user = await updateUserByID(userRequest)
     if (!user) {
-      return res.formatter.notFound(null, null, 'User not found')
+      return res.formatter.notFound({ message: 'User not found' })
     } else {
-      return res.formatter.ok(user, null)
+      return res.formatter.ok({ data: user })
     }
   } catch (error) {
-    return res.formatter.badRequest(error)
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
 
@@ -100,12 +100,12 @@ export const partialUpdateByID = async (req: Request, res: Response) => {
   try {
     const user = await partialUpdateUserByID(userRequest)
     if (!user) {
-      return res.formatter.notFound(null, null, 'User not found')
+      return res.formatter.notFound({ message: 'User not found' })
     } else {
-      return res.formatter.ok(user, null)
+      return res.formatter.ok({ data: user })
     }
   } catch (error) {
-    return res.formatter.badRequest(error)
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
 
@@ -115,11 +115,11 @@ export const deleteByID = async (req: Request, res: Response) => {
   try {
     const user = await deleteUserByID(parseInt(id))
     if (!user) {
-      return res.formatter.notFound(null, null, 'User not found')
+      return res.formatter.notFound({ message: 'User not found' })
     } else {
       return res.formatter.ok(user)
     }
   } catch (error) {
-    return res.formatter.badRequest(error)
+    return res.formatter.badRequest({ message: `${error}` })
   }
 }
