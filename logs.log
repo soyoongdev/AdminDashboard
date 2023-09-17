@@ -60,3 +60,7 @@ api VSCode Extension) thì không được (không đúng)'👉[UserID] [15/09/2
 👉[UserID] [17/09/2023|09:95:09] : 'Error: Could not delete test1@gmail.com' 
 👉[UserID] [17/09/2023|09:06:09] : 'Error: Could not delete test1@gmail.com' 
 👉[UserID] [17/09/2023|09:86:09] : 'Error: Could not delete test1@gmail.com' 
+👉[UserID] [17/09/2023|09:97:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
+👉[UserID] [17/09/2023|09:74:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
+👉[UserID] [17/09/2023|09:38:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
+👉[UserID] [17/09/2023|09:15:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 

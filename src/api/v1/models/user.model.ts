@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '~/config/database.config'
 import { syncModel } from '.'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, BOOLEAN, STRING } = DataTypes
 
 export interface User {
   userID?: number
@@ -16,9 +16,10 @@ export interface User {
   address?: string
   birthday?: string
   orderNumber: number
+  isTemp?: boolean
 }
 
-const UserSchema = sequelize.define<Model<User>>('User', {
+const UserSchema = sequelize.define<Model<User>>('user', {
   userID: {
     type: INTEGER,
     primaryKey: true,
@@ -37,7 +38,8 @@ const UserSchema = sequelize.define<Model<User>>('User', {
   phone: { type: STRING, allowNull: true },
   address: { type: STRING },
   birthday: { type: STRING, allowNull: true },
-  orderNumber: { type: INTEGER, defaultValue: 0 }
+  orderNumber: { type: INTEGER, defaultValue: 0 },
+  isTemp: { type: BOOLEAN, allowNull: true, defaultValue: false }
 })
 
 syncModel(UserSchema)

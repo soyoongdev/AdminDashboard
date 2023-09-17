@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { User } from '~/v1/models/user.model'
 import { registerUser, verifyOTPCode } from '~/v1/services/auth/auth.service'
 import logging from '~/v1/utils/logging'
 
@@ -16,9 +17,20 @@ export const login = async (req: Request, res: Response) => {
 
 // Get all
 export const register = async (req: Request, res: Response) => {
-  const { email } = req.body
+  const userRequest: User = {
+    username: req.body.username,
+    fullname: req.body.fullname,
+    email: req.body.email,
+    password: req.body.password,
+    avatar: req.body.avatar,
+    phone: req.body.phone,
+    address: req.body.address,
+    birthday: req.body.birthday,
+    roleID: req.body.roleID,
+    orderNumber: req.body.orderNumber
+  }
   try {
-    const user = await registerUser(email)
+    const user = await registerUser(userRequest)
     return res.formatter.dynamicFind(user)
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
