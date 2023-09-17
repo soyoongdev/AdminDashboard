@@ -14,7 +14,7 @@ export const countdownTimer = async (seconds: number): Promise<boolean> => {
   })
 }
 
-export const isExpired = (expiryDate: Date): boolean => {
+export const isExpiredDate = (expiryDate: Date): boolean => {
   const currentTime = new Date()
   return currentTime >= expiryDate
 }

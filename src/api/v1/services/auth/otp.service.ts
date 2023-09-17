@@ -4,7 +4,7 @@ import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
 import OTPSchema from '~/v1/models/auth/otp.model'
 import logging from '~/v1/utils/logging'
-import { createExpiryDate, isExpired } from '~/v1/utils/timer'
+import { createExpiryDate, isExpiredDate } from '~/v1/utils/timer'
 
 const NAMESPACE = 'services/otp'
 
@@ -56,30 +56,54 @@ export const sendMailOTPCode = async (otpCheck: string, hashOtp: string): Promis
 }
 
 // Get all
-export const verifyAndDeleteOTP = async (email: string, otpCheck: string): Promise<ResponseStory> => {
+export const verifyOTP = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
   try {
     const otpRecord = await OTPSchema.findOne({
       where: {
-        email: email,
+        email: emailCheck,
         otp: otpCheck
       }
     })
     if (otpRecord) {
-      if (isExpired(new Date(otpRecord.expiryDate))) {
-        return {
-          status: 400,
-          message: 'Expired date!'
-        }
-      } else {
-        await otpRecord.destroy()
-        return {
-          status: 200,
-          message: 'OTP verified!'
-        }
+      const isExpired = isExpiredDate(new Date(otpRecord.expiryDate))
+      return {
+        status: isExpired ? 408 : 200,
+        message: isExpired ? 'Expired date!' : 'OTP verified!'
       }
     } else {
       return {
-        status: 400,
+        status: 404,
+        message: 'Can not find otp code!'
+      }
+    }
+  } catch (e) {
+    logging.error(NAMESPACE, `${e}`)
+    logEvent(`${e}`)
+    throw new Error(`${e}`)
+  }
+}
+
+// Get all
+export const verifyAndDeleteOTP = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
+  try {
+    const otpRecord = await OTPSchema.findOne({
+      where: {
+        email: emailCheck,
+        otp: otpCheck
+      }
+    })
+    if (otpRecord) {
+      const isExpired = isExpiredDate(new Date(otpRecord.expiryDate))
+      if (!isExpired) {
+        await otpRecord.destroy()
+      }
+      return {
+        status: isExpired ? 400 : 200,
+        message: isExpired ? 'Expired date!' : 'OTP verified!'
+      }
+    } else {
+      return {
+        status: 404,
         message: 'Can not find otp code!'
       }
     }

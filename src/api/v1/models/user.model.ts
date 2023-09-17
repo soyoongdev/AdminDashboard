@@ -39,7 +39,7 @@ const UserSchema = sequelize.define<Model<User>>('user', {
   address: { type: STRING },
   birthday: { type: STRING, allowNull: true },
   orderNumber: { type: INTEGER, defaultValue: 0 },
-  isTemp: { type: BOOLEAN, allowNull: true, defaultValue: false }
+  isTemp: { type: BOOLEAN, allowNull: true, defaultValue: true }
 })
 
 syncModel(UserSchema)

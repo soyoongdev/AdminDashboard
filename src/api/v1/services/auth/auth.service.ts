@@ -3,10 +3,20 @@ import { ResponseStory } from '~/v1/middleware/express-formatter'
 import UserSchema, { User } from '~/v1/models/user.model'
 import { createNewUser } from '~/v1/services/user.service'
 import logging from '~/v1/utils/logging'
-import { generateAndSaveOTP, verifyAndDeleteOTP } from './otp.service'
+import { generateAndSaveOTP, verifyOTP } from './otp.service'
 // import bcrypt from 'bcrypt'
 
 const NAMESPACE = 'services/auth'
+
+export const loginUser = async (user: User): Promise<ResponseStory> => {
+  try {
+    return {}
+  } catch (error) {
+    logEvent(`${error}`)
+    logging.error(NAMESPACE, `${error}`)
+    throw Error(`${error}`)
+  }
+}
 
 export const registerUser = async (user: User): Promise<ResponseStory> => {
   try {
@@ -17,13 +27,14 @@ export const registerUser = async (user: User): Promise<ResponseStory> => {
         message: 'This email is already registered'
       }
     } else {
-      const userTemp = await createNewUser({ ...user, isTemp: true })
-      if (userTemp) {
-        return await generateAndSaveOTP(user.email)
+      const otpGenerated = await generateAndSaveOTP(user.email)
+      if (otpGenerated) {
+        await createNewUser(user)
+        return otpGenerated
       } else {
         return {
           status: 400,
-          message: 'An error register occurred'
+          message: 'An error generated otp!'
         }
       }
     }
@@ -34,31 +45,46 @@ export const registerUser = async (user: User): Promise<ResponseStory> => {
   }
 }
 
-export const verifyOTPCode = async (email: string, otpCheck: string): Promise<ResponseStory> => {
+export const verifyOTPCode = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
   try {
-    const verified = await verifyAndDeleteOTP(email, otpCheck)
-    const userFind = await UserSchema.findOne({ where: { email: email } })
-
-    if (userFind) {
-      if (verified.status === 200) {
+    const verified = await verifyOTP(emailCheck, otpCheck)
+    const userFind = await UserSchema.findOne({ where: { email: emailCheck } })
+    if (verified.status === 200) {
+      if (userFind) {
         userFind.set({ isTemp: false })
         await userFind.save()
-        return {
-          status: 200,
-          message: 'OTP verified successfully'
-        }
-      } else {
-        await userFind.destroy()
-        return {
-          ...verified,
-          status: verified.status,
-          message: verified.message
-        }
+      }
+      return {
+        status: 200,
+        message: 'OTP verified successfully'
       }
     } else {
-      return {
-        status: 404,
-        message: `Can not find user with email: ${email}`
+      if (userFind) {
+        if (verified.status === 408) {
+          if (userFind.dataValues.isTemp) {
+            await userFind.destroy()
+            return {
+              ...verified,
+              status: 200,
+              message: 'User deleted'
+            }
+          } else {
+            return {
+              status: 400,
+              message: 'OTP has been deleted'
+            }
+          }
+        } else {
+          return {
+            status: verified.status,
+            message: verified.message
+          }
+        }
+      } else {
+        return {
+          status: 404,
+          message: `Can not find email: ${emailCheck}`
+        }
       }
     }
   } catch (error) {

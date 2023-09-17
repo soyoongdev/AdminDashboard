@@ -64,3 +64,4 @@ api VSCode Extension) thì không được (không đúng)'👉[UserID] [15/09/2
 👉[UserID] [17/09/2023|09:74:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
 👉[UserID] [17/09/2023|09:38:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
 👉[UserID] [17/09/2023|09:15:15] : 'SequelizeDatabaseError: Unknown column 'isTemp' in 'field list'' 
+👉[UserID] [17/09/2023|09:43:18] : 'Error: WHERE parameter "userID" has invalid "undefined" value' 
