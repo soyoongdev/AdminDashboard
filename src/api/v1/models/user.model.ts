@@ -6,16 +6,16 @@ const { INTEGER, BOOLEAN, STRING } = DataTypes
 
 export interface User {
   userID?: number
-  roleID: number
-  username: string
+  roleID?: number
+  username?: string
   fullname?: string
-  email: string
-  password: string
+  email?: string
+  password?: string
   avatar?: string
   phone?: string
   address?: string
   birthday?: string
-  orderNumber: number
+  orderNumber?: number
   isTemp?: boolean
 }
 

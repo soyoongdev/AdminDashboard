@@ -31,7 +31,7 @@ export const getTimeRemaining = (expiryDateString: string): number => {
 }
 
 // Tạo thời gian hết hạn 60 giây sau thời điểm hiện tại
-export const createExpiryDate = (seconds: number = 20): Date => {
+export const createExpiryDate = (seconds: number = 10): Date => {
   const currentTime = new Date()
   return new Date(currentTime.getTime() + seconds * 1000)
 }

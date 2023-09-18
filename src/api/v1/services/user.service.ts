@@ -3,7 +3,7 @@ import UserSchema, { User } from '~/v1/models/user.model'
 import logging from '~/v1/utils/logging'
 import { ResponseStory } from '../middleware/express-formatter'
 
-const NAMESPACE = '[services/user]'
+const NAMESPACE = 'services/user'
 
 export const createNewUser = async (user: User) => {
   try {
@@ -34,9 +34,14 @@ export const getUserByID = async (id: number): Promise<ResponseStory> => {
 }
 
 // Get by id
-export const getUserByEmail = async (email: string) => {
+export const getUserByEmail = async (email: string): Promise<ResponseStory> => {
   try {
-    return await UserSchema.findOne({ where: { email: email } })
+    const user = await UserSchema.findOne({ where: { email: email } })
+    return {
+      status: user ? 200 : 404,
+      message: user ? 'User founded!' : 'User not found!',
+      data: user
+    }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${error}`)
@@ -72,21 +77,21 @@ export const updateUserByID = async (user: User) => {
   }
 }
 
-// Update
+// Partial update
 export const updateUserByEmail = async (user: User): Promise<ResponseStory> => {
   try {
     const userFind = await UserSchema.findOne({ where: { email: user.email } })
-    if (!userFind) {
+    if (userFind) {
+      userFind.set(user)
+      const savedUser = await userFind.save()
       return {
-        status: 404,
-        message: `Can not find user with email: ${user.email}`
+        status: savedUser ? 200 : 400,
+        data: savedUser
       }
     } else {
-      userFind.set(user)
       return {
-        status: 200,
-        message: 'User updated successfully',
-        data: await userFind.save()
+        status: 400,
+        message: 'User not found'
       }
     }
   } catch (error) {
