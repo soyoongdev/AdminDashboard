@@ -17,10 +17,15 @@ export const createNewUser = async (user: User) => {
 }
 
 // Get by id
-export const getUserByID = async (id: number) => {
+export const getUserByID = async (id: number): Promise<ResponseStory> => {
   try {
     const user = await UserSchema.findByPk(id)
-    return user
+    return {
+      status: user ? 200 : 404,
+      message: user ? 'User found' : 'User not found',
+      data: user ?? user,
+      meta: null
+    }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${error}`)
@@ -29,14 +34,9 @@ export const getUserByID = async (id: number) => {
 }
 
 // Get by id
-export const getUserByEmail = async (email: string): Promise<ResponseStory> => {
+export const getUserByEmail = async (email: string) => {
   try {
-    const user = await UserSchema.findOne({ where: { email: email } })
-    return {
-      status: user ? 200 : 404,
-      message: user ? 'User founded successfully' : 'User not found',
-      data: user ?? user
-    }
+    return await UserSchema.findOne({ where: { email: email } })
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${error}`)
@@ -121,6 +121,29 @@ export const deleteUserByID = async (id: number) => {
       return null
     } else {
       return await userFind.destroy()
+    }
+  } catch (error) {
+    logging.error(NAMESPACE, `${error}`)
+    logEvent(`${error}`)
+    throw error
+  }
+}
+
+// Delete
+export const deleteUserByEmail = async (emailCheck: string): Promise<ResponseStory> => {
+  try {
+    const userFind = await UserSchema.findOne({ where: { email: emailCheck } })
+    if (!userFind) {
+      return {
+        status: 404,
+        message: 'User not found'
+      }
+    } else {
+      return {
+        status: 200,
+        message: 'User has been deleted!',
+        data: await userFind.destroy()
+      }
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)

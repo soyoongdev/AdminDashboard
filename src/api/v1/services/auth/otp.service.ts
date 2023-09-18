@@ -8,7 +8,7 @@ import { createExpiryDate, isExpiredDate } from '~/v1/utils/timer'
 
 const NAMESPACE = 'services/otp'
 
-export const generateAndSaveOTP = async (email: string): Promise<ResponseStory> => {
+export const generateOTP = async (): Promise<string> => {
   try {
     // Generate otp code..
     const otpGenerated = otpGenerator
@@ -16,18 +16,39 @@ export const generateAndSaveOTP = async (email: string): Promise<ResponseStory> 
       .toString()
     // Hash otp code..
     const salt = bcrypt.genSaltSync(10)
-    const hashOtp = bcrypt.hashSync(otpGenerated, salt)
-    // Create a new expired date..
+    return bcrypt.hashSync(otpGenerated, salt)
+  } catch (e) {
+    logEvent(`${e}`)
+    logging.error(NAMESPACE, `${e}`)
+    throw new Error(`${e}`)
+  }
+}
+
+export const saveOTP = async (email: string, otpHashed: string) => {
+  try {
     const expiryDate = createExpiryDate()
-    // Send otp to email..
-    await sendMailOTPCode(otpGenerated, hashOtp)
     // Insert otp to database..
-    const otp = await OTPSchema.create({ email: email, otp: hashOtp, expiryDate: expiryDate.toISOString() })
-    return {
-      status: otp ? 200 : 400,
-      message: otp ? 'OTP Generated!!' : `Could not create otp for ${email}`,
-      data: otp ? otp : null
-    }
+    return await OTPSchema.create({ email: email, otp: otpHashed, expiryDate: expiryDate.toISOString() })
+  } catch (e) {
+    logEvent(`${e}`)
+    logging.error(NAMESPACE, `${e}`)
+    throw new Error(`${e}`)
+  }
+}
+
+export const generateAndSaveOTP = async (email: string) => {
+  try {
+    // Generate otp code..
+    const otpGenerated = otpGenerator
+      .generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+      .toString()
+    // Hash otp code..
+    const salt = bcrypt.genSaltSync(10)
+    const otpHashed = bcrypt.hashSync(otpGenerated, salt)
+    const expiryDate = createExpiryDate()
+    // Insert otp to database..
+    const otpCreated = await OTPSchema.create({ email: email, otp: otpHashed, expiryDate: expiryDate.toISOString() })
+    return otpCreated
   } catch (e) {
     logEvent(`${e}`)
     logging.error(NAMESPACE, `${e}`)
@@ -56,7 +77,7 @@ export const sendMailOTPCode = async (otpCheck: string, hashOtp: string): Promis
 }
 
 // Get all
-export const verifyOTP = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
+export const verifyAndDeleteOTPCode = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
   try {
     const otpRecord = await OTPSchema.findOne({
       where: {
@@ -66,9 +87,17 @@ export const verifyOTP = async (emailCheck: string, otpCheck: string): Promise<R
     })
     if (otpRecord) {
       const isExpired = isExpiredDate(new Date(otpRecord.expiryDate))
-      return {
-        status: isExpired ? 408 : 200,
-        message: isExpired ? 'Expired date!' : 'OTP verified!'
+      if (isExpired) {
+        return {
+          status: 408,
+          message: 'Expired date!'
+        }
+      } else {
+        await otpRecord?.destroy()
+        return {
+          status: 200,
+          message: 'OTP verified!'
+        }
       }
     } else {
       return {
@@ -83,33 +112,17 @@ export const verifyOTP = async (emailCheck: string, otpCheck: string): Promise<R
   }
 }
 
-// Get all
-export const verifyAndDeleteOTP = async (emailCheck: string, otpCheck: string): Promise<ResponseStory> => {
+export const getOTPByEmail = async (email: string): Promise<ResponseStory> => {
   try {
-    const otpRecord = await OTPSchema.findOne({
-      where: {
-        email: emailCheck,
-        otp: otpCheck
-      }
-    })
-    if (otpRecord) {
-      const isExpired = isExpiredDate(new Date(otpRecord.expiryDate))
-      if (!isExpired) {
-        await otpRecord.destroy()
-      }
-      return {
-        status: isExpired ? 400 : 200,
-        message: isExpired ? 'Expired date!' : 'OTP verified!'
-      }
-    } else {
-      return {
-        status: 404,
-        message: 'Can not find otp code!'
-      }
+    const otpFind = await OTPSchema.findOne({ where: { email: email } })
+    return {
+      status: otpFind ? 200 : 404,
+      message: otpFind ? 'Founded' : 'Not found',
+      data: otpFind ? otpFind.dataValues : null
     }
-  } catch (e) {
-    logging.error(NAMESPACE, `${e}`)
-    logEvent(`${e}`)
-    throw new Error(`${e}`)
+  } catch (error) {
+    logging.error(NAMESPACE, `${error}`)
+    logEvent(`${error}`)
+    throw error
   }
 }

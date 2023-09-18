@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { User } from '~/v1/models/user.model'
-import { registerUser, verifyOTPCode } from '~/v1/services/auth/auth.service'
+import { registerUser } from '~/v1/services/auth/auth.service'
+import { verifyAndDeleteOTPCode } from '~/v1/services/auth/otp.service'
 import logging from '~/v1/utils/logging'
 
 const NAMESPACE = 'controller/auth'
@@ -30,8 +31,11 @@ export const register = async (req: Request, res: Response) => {
     orderNumber: req.body.orderNumber
   }
   try {
-    const user = await registerUser(userRequest)
-    return res.formatter.dynamicFind(user)
+    const register = await registerUser(userRequest)
+    if (register) {
+      return res.formatter.ok({ data: register })
+    }
+    return res.formatter.badRequest({})
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     return res.formatter.badRequest({ message: `${error}` })
@@ -41,8 +45,8 @@ export const register = async (req: Request, res: Response) => {
 export const verifyOTP = async (req: Request, res: Response) => {
   const { email, otp } = req.body
   try {
-    const result = await verifyOTPCode(email, otp)
-    return res.formatter.dynamicFind(result)
+    const result = await verifyAndDeleteOTPCode(email, otp)
+    return res.status(result.status || 500).json({ ...result })
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     return res.formatter.badRequest({ message: `${error}` })

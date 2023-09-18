@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import methods, { Method, MethodType } from './methods'
+import methods, { Method, MethodStatus, MethodType } from './methods'
+import { Model } from 'sequelize'
 
 export interface ResponseStory {
-  status?: number
+  status?: MethodStatus
   message?: string
   data?: any
   meta?: any
@@ -35,7 +36,7 @@ const _generateFormatters = (res: Response) => {
       if (method.type === 'dynamicFind') {
         const foundMethod = methods.find((m) => m.status === response.status)
         if (foundMethod) {
-          _generateResponseStory(res, {
+          res.status(foundMethod.status).json({
             status: foundMethod.status,
             message: response.message ? response.message : foundMethod.message,
             data: response.data,
@@ -44,11 +45,11 @@ const _generateFormatters = (res: Response) => {
         } else {
           res.status(500).json({
             status: 500,
-            message: 'Can not find the requested status method!'
+            message: 'Can not find the request status method!'
           })
         }
       } else {
-        _generateResponseStory(res, {
+        res.status(method.status).json({
           status: method.status,
           message: response.message ? response.message : method.message,
           data: response.data,
@@ -59,12 +60,4 @@ const _generateFormatters = (res: Response) => {
   })
 
   return formatter
-}
-
-const _generateResponseStory = (res: Response, story: ResponseStory) => {
-  if (story.status) {
-    res.status(story.status).json(story)
-  } else {
-    res.status(500).json({ status: 500, message: 'Generate body error!' })
-  }
 }
