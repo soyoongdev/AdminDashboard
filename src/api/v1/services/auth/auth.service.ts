@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
 import OTPSchema from '~/v1/models/auth/otp.model'
@@ -5,8 +6,6 @@ import UserSchema, { User } from '~/v1/models/user.model'
 import { generateAndSaveOTP } from '~/v1/services/auth/otp.service'
 import logging from '~/v1/utils/logging'
 import { isExpiredDate } from '~/v1/utils/timer'
-import * as userService from '../user.service'
-// import bcrypt from 'bcrypt'
 
 const NAMESPACE = 'services/auth'
 
@@ -55,7 +54,9 @@ export const registerUser = async (user: User): Promise<ResponseStory> => {
         }
       }
     } else {
-      const userTemp = await UserSchema.create({ ...user, isTemp: true })
+      const salt = await bcrypt.genSalt(10)
+      const passwordHashed = await bcrypt.hash(user.password!, salt)
+      const userTemp = await UserSchema.create({ ...user, password: passwordHashed, isTemp: true })
       const otpGenerated = await generateAndSaveOTP(user.email!)
       return {
         status: 200,

@@ -16,8 +16,8 @@ export const generateAndSaveOTP = async (emailCheck: string): Promise<ResponseSt
       .generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
       .toString()
     // Hash otp code..
-    const salt = bcrypt.genSaltSync(10)
-    const otpHashed = bcrypt.hashSync(otpGenerated, salt)
+    const salt = await bcrypt.genSalt(10)
+    const otpHashed = await bcrypt.hash(otpGenerated, salt)
     const expiryDate = createExpiryDate().toISOString()
     const otpFind = await OTPSchema.findOne({ where: { email: emailCheck } })
     if (otpFind) {

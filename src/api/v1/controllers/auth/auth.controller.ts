@@ -1,5 +1,7 @@
+import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
-import { User } from '~/v1/models/user.model'
+import { Op } from 'sequelize'
+import UserSchema, { User } from '~/v1/models/user.model'
 import { registerUser } from '~/v1/services/auth/auth.service'
 import { generateAndSaveOTP, verifyAndDeleteOTP } from '~/v1/services/auth/otp.service'
 import logging from '~/v1/utils/logging'
@@ -8,9 +10,22 @@ const NAMESPACE = 'controller/auth'
 
 // Get by id
 export const login = async (req: Request, res: Response) => {
-  const { id } = req.params
+  const { username, email, password } = req.body
   try {
-    return res.formatter.ok({})
+    const findUser = await UserSchema.findOne({
+      where: {
+        [Op.or]: [{ email: email || '' }, { username: username || '' }]
+      }
+    })
+
+    if (findUser) {
+      const matchedPassword = await bcrypt.compare(password, findUser.dataValues.password!)
+      if (matchedPassword) {
+        return res.formatter.ok({ message: 'Login success!', data: findUser })
+      } else {
+        return res.formatter.badRequest({ message: 'Login failed!' })
+      }
+    }
   } catch (error) {
     return res.formatter.badRequest({ message: `${error}` })
   }
@@ -42,8 +57,6 @@ export const register = async (req: Request, res: Response) => {
 export const verifyOTP = async (req: Request, res: Response) => {
   const { email, otp } = req.body
   try {
-    if (!email) return res.formatter.badRequest({ message: `Email not found` })
-    if (!otp) return res.formatter.badRequest({ message: `OTP not found` })
     const result = await verifyAndDeleteOTP(email, otp)
     return res.formatter.dynamicFind(result)
   } catch (error) {
