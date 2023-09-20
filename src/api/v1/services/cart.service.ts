@@ -1,18 +1,18 @@
 import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
-import UserSchema, { User } from '~/v1/models/user.model'
+import CartSchema, { Cart } from '~/v1/models/cart.model'
 import logging from '~/v1/utils/logging'
 
-const NAMESPACE = 'User'
+const NAMESPACE = 'Cart'
 
-export const createNew = async (user: User): Promise<ResponseStory> => {
+export const createNew = async (cart: Cart): Promise<ResponseStory> => {
   try {
-    const length = (await UserSchema.findAll()).length
-    const userNew = await UserSchema.create({ ...user, orderNumber: length })
+    const length = (await CartSchema.findAll()).length
+    const cartNew = await CartSchema.create({ ...cart, orderNumber: length })
     return {
-      status: userNew ? 200 : 400,
-      message: userNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
-      data: userNew
+      status: cartNew ? 200 : 400,
+      message: cartNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
+      data: cartNew
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
@@ -24,11 +24,11 @@ export const createNew = async (user: User): Promise<ResponseStory> => {
 // Get by id
 export const getByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const product = await UserSchema.findByPk(id)
+    const cart = await CartSchema.findByPk(id)
     return {
-      status: product ? 200 : 404,
-      message: product ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
-      data: product
+      status: cart ? 200 : 404,
+      message: cart ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
+      data: cart
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
@@ -40,11 +40,11 @@ export const getByID = async (id: number): Promise<ResponseStory> => {
 // Get all
 export const getAll = async (): Promise<ResponseStory> => {
   try {
-    const products = await UserSchema.findAll()
+    const carts = await CartSchema.findAll()
     return {
-      status: products ? 200 : 400,
-      message: products ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
-      data: products
+      status: carts ? 200 : 400,
+      message: carts ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
+      data: carts
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
@@ -54,21 +54,21 @@ export const getAll = async (): Promise<ResponseStory> => {
 }
 
 // Update
-export const updateByID = async (user: User): Promise<ResponseStory> => {
+export const updateByID = async (cart: Cart): Promise<ResponseStory> => {
   try {
-    const userFind = await UserSchema.findByPk(user.userID)
-    if (!userFind) {
+    const cartFind = await CartSchema.findByPk(cart.cartID)
+    if (!cartFind) {
       return {
         status: 400,
         message: `${NAMESPACE} not found!`
       }
     } else {
-      userFind.set(user)
-      const userSaved = await userFind.save()
+      cartFind.set(cart)
+      const cartSaved = await cartFind.save()
       return {
-        status: userSaved ? 200 : 400,
-        message: userSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
-        data: userSaved
+        status: cartSaved ? 200 : 400,
+        message: cartSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
+        data: cartSaved
       }
     }
   } catch (error) {
@@ -81,8 +81,8 @@ export const updateByID = async (user: User): Promise<ResponseStory> => {
 // Delete
 export const deleteByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const userFind = await UserSchema.findByPk(id)
-    if (!userFind) {
+    const cartFind = await CartSchema.findByPk(id)
+    if (!cartFind) {
       return {
         status: 404,
         message: `${NAMESPACE} not found!`
@@ -91,7 +91,7 @@ export const deleteByID = async (id: number): Promise<ResponseStory> => {
       return {
         status: 200,
         message: `${NAMESPACE} has been deleted!`,
-        data: await userFind.destroy()
+        data: await cartFind.destroy()
       }
     }
   } catch (error) {

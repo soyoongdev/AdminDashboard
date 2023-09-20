@@ -1,18 +1,18 @@
 import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
-import UserSchema, { User } from '~/v1/models/user.model'
+import ProductSchema, { Product } from '~/v1/models/product.model'
 import logging from '~/v1/utils/logging'
 
-const NAMESPACE = 'User'
+const NAMESPACE = 'Product'
 
-export const createNew = async (user: User): Promise<ResponseStory> => {
+export const createNew = async (product: Product): Promise<ResponseStory> => {
   try {
-    const length = (await UserSchema.findAll()).length
-    const userNew = await UserSchema.create({ ...user, orderNumber: length })
+    const length = (await ProductSchema.findAll()).length
+    const productNew = await ProductSchema.create({ ...product, orderNumber: length })
     return {
-      status: userNew ? 200 : 400,
-      message: userNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
-      data: userNew
+      status: productNew ? 200 : 400,
+      message: productNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
+      data: productNew
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
@@ -24,7 +24,7 @@ export const createNew = async (user: User): Promise<ResponseStory> => {
 // Get by id
 export const getByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const product = await UserSchema.findByPk(id)
+    const product = await ProductSchema.findByPk(id)
     return {
       status: product ? 200 : 404,
       message: product ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
@@ -40,7 +40,7 @@ export const getByID = async (id: number): Promise<ResponseStory> => {
 // Get all
 export const getAll = async (): Promise<ResponseStory> => {
   try {
-    const products = await UserSchema.findAll()
+    const products = await ProductSchema.findAll()
     return {
       status: products ? 200 : 400,
       message: products ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
@@ -54,21 +54,21 @@ export const getAll = async (): Promise<ResponseStory> => {
 }
 
 // Update
-export const updateByID = async (user: User): Promise<ResponseStory> => {
+export const updateByID = async (product: Product): Promise<ResponseStory> => {
   try {
-    const userFind = await UserSchema.findByPk(user.userID)
-    if (!userFind) {
+    const productFind = await ProductSchema.findByPk(product.productID)
+    if (!productFind) {
       return {
         status: 400,
         message: `${NAMESPACE} not found!`
       }
     } else {
-      userFind.set(user)
-      const userSaved = await userFind.save()
+      productFind.set(product)
+      const productSaved = await productFind.save()
       return {
-        status: userSaved ? 200 : 400,
-        message: userSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
-        data: userSaved
+        status: productSaved ? 200 : 400,
+        message: productSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
+        data: productSaved
       }
     }
   } catch (error) {
@@ -81,8 +81,8 @@ export const updateByID = async (user: User): Promise<ResponseStory> => {
 // Delete
 export const deleteByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const userFind = await UserSchema.findByPk(id)
-    if (!userFind) {
+    const productFind = await ProductSchema.findByPk(id)
+    if (!productFind) {
       return {
         status: 404,
         message: `${NAMESPACE} not found!`
@@ -91,7 +91,7 @@ export const deleteByID = async (id: number): Promise<ResponseStory> => {
       return {
         status: 200,
         message: `${NAMESPACE} has been deleted!`,
-        data: await userFind.destroy()
+        data: await productFind.destroy()
       }
     }
   } catch (error) {
