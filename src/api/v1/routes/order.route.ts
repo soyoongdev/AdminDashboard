@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import * as controller from '~/v1/controllers/user.controller'
-import { requestValidationFields } from '~/v1/middleware/request-validator'
+import * as controller from '~/v1/controllers/order.controller'
 
 const router = Router()
 

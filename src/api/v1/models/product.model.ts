@@ -7,10 +7,11 @@ const { INTEGER, STRING, JSON } = DataTypes
 export interface Product {
   productID?: number
   categoryID: number
-  inventoryID: number
   rateID?: number
   itemID?: number
-  code: string
+  code?: string
+  name?: string
+  desc?: string
   images?: any[]
   releaseDate?: string
   orderNumber?: number
@@ -25,9 +26,6 @@ const ProductSchema = sequelize.define<Model<Product>>('products', {
   categoryID: {
     type: INTEGER
   },
-  inventoryID: {
-    type: INTEGER
-  },
   rateID: {
     type: INTEGER,
     allowNull: true
@@ -39,8 +37,14 @@ const ProductSchema = sequelize.define<Model<Product>>('products', {
   code: {
     type: STRING
   },
+  name: {
+    type: STRING
+  },
+  desc: {
+    type: STRING
+  },
   images: { type: JSON, allowNull: true },
-  releaseDate: { type: STRING },
+  releaseDate: { type: STRING, allowNull: true },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 

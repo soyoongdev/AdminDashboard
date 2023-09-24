@@ -1,13 +1,13 @@
 import express from 'express'
 import { body } from 'express-validator'
 import * as controller from '~/v1/controllers/auth/auth.controller'
-import { requestValidator } from '~/v1/middleware/request-validation'
+import { requestValidationRules } from '~/v1/middleware/request-validator'
 
 const router = express.Router()
 
 router.post(
   '/login',
-  requestValidator([
+  requestValidationRules([
     body('username').not().isEmpty().withMessage('Username can not be empty'),
     body('email').not().isEmpty().withMessage('Email can not be empty').isEmail().withMessage('Email is invalid'),
     body('password').not().isEmpty().withMessage('Password can not be empty')
@@ -16,7 +16,7 @@ router.post(
 )
 router.post(
   '/register',
-  requestValidator([
+  requestValidationRules([
     body('username').not().isEmpty().withMessage('Username can not be empty'),
     body('email').not().isEmpty().withMessage('Email can not be empty').isEmail().withMessage('Email is invalid'),
     body('password').not().isEmpty().withMessage('Password can not be empty'),
@@ -26,7 +26,7 @@ router.post(
 )
 router.post(
   '/verify-otp',
-  requestValidator([
+  requestValidationRules([
     body('email').not().isEmpty().withMessage('Email can not be empty').isEmail().withMessage('Email is invalid'),
     body('otp').not().isEmpty().withMessage('OTP can not be empty')
   ]),
@@ -34,7 +34,7 @@ router.post(
 )
 router.post(
   '/resend-otp',
-  requestValidator([
+  requestValidationRules([
     body('email').not().isEmpty().withMessage('Email can not be empty').isEmail().withMessage('Email is invalid')
   ]),
   controller.resendOTP

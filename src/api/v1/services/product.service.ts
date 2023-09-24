@@ -44,7 +44,10 @@ export const getAll = async (): Promise<ResponseStory> => {
     return {
       status: products ? 200 : 400,
       message: products ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
-      data: products
+      data: products,
+      meta: {
+        total: products.length
+      }
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)

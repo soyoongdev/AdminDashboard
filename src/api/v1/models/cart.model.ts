@@ -7,10 +7,10 @@ const { INTEGER, STRING, JSON } = DataTypes
 export interface Cart {
   cartID?: number
   userID: number
-  status: string
-  modifiedOn: string
-  products?: []
-  orderNumber: number
+  status: string // (active | deactive | sale ) Để kiểm tra đơn hàng này đã hết hạn hay chưa (Nếu đang sale up)
+  modifiedOn?: string //.
+  products: { productID: number; quantity: number }[]
+  orderNumber?: number
 }
 
 const CartSchema = sequelize.define<Model<Cart>>('carts', {
@@ -30,7 +30,7 @@ const CartSchema = sequelize.define<Model<Cart>>('carts', {
     type: STRING,
     defaultValue: new Date().toISOString()
   },
-  products: { type: JSON, allowNull: false },
+  products: { type: JSON, allowNull: false, defaultValue: [] },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 

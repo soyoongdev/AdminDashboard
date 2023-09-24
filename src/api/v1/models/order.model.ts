@@ -14,7 +14,7 @@ export interface Order {
   payment: any
   amount: number
   products?: []
-  orderNumber: number
+  orderNumber?: number
 }
 
 const PaymentSchema = sequelize.define<Model<Order>>('orders', {

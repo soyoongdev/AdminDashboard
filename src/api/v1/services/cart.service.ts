@@ -2,18 +2,105 @@ import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
 import CartSchema, { Cart } from '~/v1/models/cart.model'
 import logging from '~/v1/utils/logging'
+import InventorySchema from '../models/inventory.model'
 
-const NAMESPACE = 'Cart'
+const NAMESPACE = 'service/cart'
 
-export const createNew = async (cart: Cart): Promise<ResponseStory> => {
+export async function createNew(cart: Cart): Promise<ResponseStory> {
   try {
-    const length = (await CartSchema.findAll()).length
-    const cartNew = await CartSchema.create({ ...cart, orderNumber: length })
-    return {
-      status: cartNew ? 200 : 400,
-      message: cartNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
-      data: cartNew
+    const cartToUpdate = await CartSchema.findOne({
+      where: {
+        userID: cart.userID
+      }
+    })
+    if (cartToUpdate) {
+      for (let i = 0; i < cartToUpdate.dataValues.products.length; i++) {
+        const productToUpdate = cart.products[i]
+        const prevProducts = cartToUpdate.dataValues.products
+        prevProducts[i].quantity += cart.products[i].quantity
+        const cartToUpdateSaved = await CartSchema.update(
+          { products: prevProducts },
+          { where: { userID: cart.userID } }
+        )
+        const inventoryToUpdate = await InventorySchema.findOne({ where: { productID: productToUpdate.productID } })
+        if (inventoryToUpdate) {
+          if (inventoryToUpdate.dataValues.quantity < 0) {
+            return {
+              status: 400,
+              message: 'No enough!',
+              data: {
+                inventory: inventoryToUpdate
+              }
+            }
+          } else {
+            if (cartToUpdateSaved) {
+              const inventoryUpdated = await InventorySchema.decrement(
+                { quantity: productToUpdate.quantity },
+                { where: { productID: productToUpdate.productID } }
+              )
+              if (inventoryUpdated) {
+                return {
+                  status: 200,
+                  message: 'Updated cart!',
+                  data: await CartSchema.findOne({ where: { userID: cart.userID } }),
+                  meta: await InventorySchema.findOne({
+                    where: { productID: productToUpdate.productID }
+                  })
+                }
+              } else {
+                return {
+                  status: 404,
+                  message: 'Inventory update failed!'
+                }
+              }
+            } else {
+              return {
+                status: 400,
+                message: 'Cart update failed!'
+              }
+            }
+          }
+        } else {
+          return {
+            status: 404,
+            message: 'Can not find inventory to update!'
+          }
+        }
+      }
+    } else {
+      const carts = await CartSchema.findAll()
+      const newCart = await CartSchema.create({ ...cart, orderNumber: carts ? carts.length : 0 })
+      if (newCart) {
+        for (let i = 0; i < newCart.dataValues.products.length; i++) {
+          const productToUpdate = newCart.dataValues.products[i]
+          const inventoryToUpdate = await InventorySchema.decrement(
+            { quantity: productToUpdate.quantity },
+            { where: { productID: productToUpdate.productID } }
+          )
+          if (inventoryToUpdate) {
+            return {
+              status: 200,
+              message: `Cart created!`,
+              data: await CartSchema.findOne({ where: { userID: cart.userID } }),
+              meta: await InventorySchema.findOne({ where: { productID: productToUpdate.productID } })
+            }
+          } else {
+            return {
+              status: 400,
+              message: `Inventory update failed!`,
+              data: inventoryToUpdate
+            }
+          }
+        }
+      } else {
+        return {
+          status: 400,
+          message: `Cart create failed!`,
+          data: newCart
+        }
+      }
     }
+    return new Error('Unknow error')
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${error}`)
@@ -42,8 +129,7 @@ export const getAll = async (): Promise<ResponseStory> => {
   try {
     const carts = await CartSchema.findAll()
     return {
-      status: carts ? 200 : 400,
-      message: carts ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
+      status: 200,
       data: carts
     }
   } catch (error) {

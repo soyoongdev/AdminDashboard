@@ -45,7 +45,8 @@ const _generateFormatters = (res: Response) => {
         } else {
           res.status(500).json({
             status: 500,
-            message: 'Can not find the request status method!'
+            message: 'Can not find the request status method!',
+            meta: res.statusCode
           })
         }
       } else {
