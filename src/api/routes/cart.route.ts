@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import * as controller from '~/v1/controllers/cart.controller'
+import * as controller from '~/controllers/cart.controller'
 import { requestValidationRules } from '../middleware/request-validator'
 
 const router = Router()
