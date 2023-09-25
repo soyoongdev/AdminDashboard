@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import { Op } from 'sequelize'
-import UserSchema, { User } from '~/v1/models/user.model'
-import { registerUser } from '~/v1/services/auth/auth.service'
-import { generateAndSaveOTP, verifyAndDeleteOTP } from '~/v1/services/auth/otp.service'
-import logging from '~/v1/utils/logging'
+import UserSchema, { User } from '~/models/user.model'
+import { registerUser } from '~/services/auth/auth.service'
+import { generateAndSaveOTP, verifyAndDeleteOTP } from '~/services/auth/otp.service'
+import logging from '~/utils/logging'
 
 const NAMESPACE = 'controller/auth'
 

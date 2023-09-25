@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { Order } from '~/v1/models/order.model'
-import * as services from '~/v1/services/order.service'
+import { Order } from '~/models/order.model'
+import * as services from '~/services/order.service'
 
 const NAMESPACE = 'Order'
 

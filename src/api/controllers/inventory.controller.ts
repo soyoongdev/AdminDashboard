@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { Inventory } from '~/v1/models/inventory.model'
-import * as services from '~/v1/services/inventory.service'
+import { Inventory } from '~/models/inventory.model'
+import * as services from '~/services/inventory.service'
 
 const NAMESPACE = 'Inventory'
 

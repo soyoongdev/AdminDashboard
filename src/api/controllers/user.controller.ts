@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { User } from '~/v1/models/user.model'
-import * as service from '~/v1/services/user.service'
+import { User } from '~/models/user.model'
+import * as service from '~/services/user.service'
 
 // Create new
 export const createNew = async (req: Request, res: Response) => {

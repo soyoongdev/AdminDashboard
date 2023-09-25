@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt'
 import otpGenerator from 'otp-generator'
-import logEvent from '~/v1/helpers/log-event'
-import { ResponseStory } from '~/v1/middleware/express-formatter'
-import OTPSchema from '~/v1/models/auth/otp.model'
-import UserSchema from '~/v1/models/user.model'
-import logging from '~/v1/utils/logging'
-import { createExpiryDate, isExpiredDate } from '~/v1/utils/timer'
+import logEvent from '~/helpers/log-event'
+import { ResponseStory } from '~/middleware/express-formatter'
+import OTPSchema from '~/models/auth/otp.model'
+import UserSchema from '~/models/user.model'
+import logging from '~/utils/logging'
+import { createExpiryDate, isExpiredDate } from '~/utils/timer'
 
 const NAMESPACE = 'services/otp'
 

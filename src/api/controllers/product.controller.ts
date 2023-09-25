@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import generator from 'otp-generator'
-import { Product } from '~/v1/models/product.model'
-import * as services from '~/v1/services/product.service'
+import { Product } from '~/models/product.model'
+import * as services from '~/services/product.service'
 
 const NAMESPACE = 'Product'
 

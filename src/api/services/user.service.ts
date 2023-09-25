@@ -1,7 +1,7 @@
-import logEvent from '~/v1/helpers/log-event'
-import { ResponseStory } from '~/v1/middleware/express-formatter'
-import UserSchema, { User } from '~/v1/models/user.model'
-import logging from '~/v1/utils/logging'
+import logEvent from '~/helpers/log-event'
+import { ResponseStory } from '~/middleware/express-formatter'
+import UserSchema, { User } from '~/models/user.model'
+import logging from '~/utils/logging'
 
 const NAMESPACE = 'User'
 

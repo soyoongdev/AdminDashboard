@@ -2,8 +2,8 @@ import cors from 'cors'
 import express, { Express } from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import { responseEnhancer } from '~/v1/middleware/express-formatter'
-import routes from '~/v1/routes'
+import { responseEnhancer } from '~/middleware/express-formatter'
+import routes from '~/routes'
 
 const app: Express = express()
 

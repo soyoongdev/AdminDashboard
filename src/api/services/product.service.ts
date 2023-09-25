@@ -1,7 +1,7 @@
-import logEvent from '~/v1/helpers/log-event'
-import { ResponseStory } from '~/v1/middleware/express-formatter'
-import ProductSchema, { Product } from '~/v1/models/product.model'
-import logging from '~/v1/utils/logging'
+import logEvent from '~/helpers/log-event'
+import { ResponseStory } from '~/middleware/express-formatter'
+import ProductSchema, { Product } from '~/models/product.model'
+import logging from '~/utils/logging'
 
 const NAMESPACE = 'Product'
 

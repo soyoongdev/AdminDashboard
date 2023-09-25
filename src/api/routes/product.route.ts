@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import * as controller from '~/controllers/product.controller'
-import { requestValidationRules } from '~/v1/middleware/request-validator'
+import { requestValidationRules } from '~/middleware/request-validator'
 
 const router = Router()
 

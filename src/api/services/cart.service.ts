@@ -1,8 +1,8 @@
 import { Op } from 'sequelize'
-import logEvent from '~/v1/helpers/log-event'
-import { ResponseStory } from '~/v1/middleware/express-formatter'
-import CartSchema, { Cart } from '~/v1/models/cart.model'
-import logging from '~/v1/utils/logging'
+import logEvent from '~/helpers/log-event'
+import { ResponseStory } from '~/middleware/express-formatter'
+import CartSchema, { Cart } from '~/models/cart.model'
+import logging from '~/utils/logging'
 import InventorySchema from '../models/inventory.model'
 
 const NAMESPACE = 'service/cart'

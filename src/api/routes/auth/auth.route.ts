@@ -1,7 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator'
 import * as controller from '~/controllers/auth/auth.controller'
-import { requestValidationRules } from '~/v1/middleware/request-validator'
+import { requestValidationRules } from '~/middleware/request-validator'
 
 const router = express.Router()
 
