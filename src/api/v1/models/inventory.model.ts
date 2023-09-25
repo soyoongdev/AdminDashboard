@@ -9,7 +9,7 @@ export interface Inventory {
   brandID: number
   productID: number
   quantity: number
-  reservations: []
+  reservations: { userID: number; quantity: number }[] // { userID, quantity }
   orderNumber?: number
 }
 

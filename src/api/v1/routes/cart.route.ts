@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import * as controller from '~/v1/controllers/cart.controller'
-import { requestValidationFields, requestValidationRules } from '../middleware/request-validator'
+import { requestValidationRules } from '../middleware/request-validator'
 
 const router = Router()
 // 'userID', 'status', 'products'
@@ -26,9 +26,39 @@ router.post(
   ]),
   controller.createNew
 )
-router.get('/find/:id', requestValidationFields(['cartID']), controller.getByID)
+router.get(
+  '/find/:id',
+  requestValidationRules([
+    body('userID')
+      .notEmpty()
+      .withMessage('`userID` can not be empty!')
+      .isInt()
+      .withMessage('`userID` must be `integer` value type!')
+  ]),
+  controller.getByUserID
+)
 router.get('/find', controller.getAll)
-router.put('/:id', controller.updateByID)
-router.delete('/:id', controller.deleteByID)
+router.put(
+  '/:id',
+  requestValidationRules([
+    body('userID')
+      .notEmpty()
+      .withMessage('`userID` can not be empty!')
+      .isInt()
+      .withMessage('`userID` must be `integer` value type!')
+  ]),
+  controller.updateByUserID
+)
+router.delete(
+  '/:id',
+  requestValidationRules([
+    body('userID')
+      .notEmpty()
+      .withMessage('`userID` can not be empty!')
+      .isInt()
+      .withMessage('`userID` must be `integer` value type!')
+  ]),
+  controller.deleteByUserID
+)
 
 export default router

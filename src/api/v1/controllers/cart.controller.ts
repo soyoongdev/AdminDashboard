@@ -12,19 +12,17 @@ export const createNew = async (req: Request, res: Response) => {
       products: req.body.products
     }
 
-    const cartNew = await services.createNew(cartRequest)
-    return res.formatter.dynamicFind(cartNew)
+    return res.formatter.dynamicFind(await services.createNew(cartRequest))
   } catch (error) {
     res.formatter.dynamicFind({ message: `${error}` })
   }
 }
 
 // Get by id
-export const getByID = async (req: Request, res: Response) => {
+export const getByUserID = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
-    const cart = await services.getByID(parseInt(id))
-    return res.formatter.dynamicFind(cart)
+    return res.formatter.dynamicFind(await services.getByUserID(parseInt(id)))
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -33,35 +31,32 @@ export const getByID = async (req: Request, res: Response) => {
 // Get all
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const inventories = await services.getAll()
-    return res.formatter.dynamicFind(inventories)
+    return res.formatter.dynamicFind(await services.getAll())
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
 }
 
 // Update
-export const updateByID = async (req: Request, res: Response) => {
+export const updateByUserID = async (req: Request, res: Response) => {
   const cartRequest: Cart = {
-    cartID: parseInt(req.params.id),
     userID: req.body.userID,
     status: req.body.status,
     modifiedOn: req.body.modifiedOn,
     products: req.body.products
   }
   try {
-    const cartFind = await services.updateByID(cartRequest)
-    return res.formatter.dynamicFind(cartFind)
+    return res.formatter.dynamicFind(await services.updateByUserID(cartRequest))
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
 }
 
 // Delete
-export const deleteByID = async (req: Request, res: Response) => {
+export const deleteByUserID = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
-    const cartFind = await services.deleteByID(parseInt(id))
+    const cartFind = await services.deleteByUserID(parseInt(id))
     return res.formatter.dynamicFind(cartFind)
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })

@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import logEvent from '~/v1/helpers/log-event'
 import { ResponseStory } from '~/v1/middleware/express-formatter'
 import CartSchema, { Cart } from '~/v1/models/cart.model'
@@ -8,95 +9,45 @@ const NAMESPACE = 'service/cart'
 
 export async function createNew(cart: Cart): Promise<ResponseStory> {
   try {
-    const cartToUpdate = await CartSchema.findOne({
+    const cartToCreateNew = await CartSchema.findOne({
       where: {
         userID: cart.userID
       }
     })
-    if (cartToUpdate) {
-      for (let i = 0; i < cartToUpdate.dataValues.products.length; i++) {
-        const productToUpdate = cart.products[i]
-        const prevProducts = cartToUpdate.dataValues.products
-        prevProducts[i].quantity += cart.products[i].quantity
-        const cartToUpdateSaved = await CartSchema.update(
-          { products: prevProducts },
-          { where: { userID: cart.userID } }
-        )
-        const inventoryToUpdate = await InventorySchema.findOne({ where: { productID: productToUpdate.productID } })
-        if (inventoryToUpdate) {
-          if (inventoryToUpdate.dataValues.quantity < 0) {
-            return {
-              status: 400,
-              message: 'No enough!',
-              data: {
-                inventory: inventoryToUpdate
-              }
+    if (cartToCreateNew) {
+      return {
+        status: 400,
+        message: 'Cart already exists',
+        data: cartToCreateNew
+      }
+    } else {
+      // Before adding, we need to check whether the quantity is sufficient or not.
+      const carts = await CartSchema.findAll()
+      const productsInput = cart.products
+      for (let i = 0; i < productsInput.length; i++) {
+        const inventoryOfProduct = await InventorySchema.findOne({
+          where: {
+            productID: productsInput[i].productID,
+            quantity: {
+              [Op.gte]: productsInput[i].quantity
             }
-          } else {
-            if (cartToUpdateSaved) {
-              const inventoryUpdated = await InventorySchema.decrement(
-                { quantity: productToUpdate.quantity },
-                { where: { productID: productToUpdate.productID } }
-              )
-              if (inventoryUpdated) {
-                return {
-                  status: 200,
-                  message: 'Updated cart!',
-                  data: await CartSchema.findOne({ where: { userID: cart.userID } }),
-                  meta: await InventorySchema.findOne({
-                    where: { productID: productToUpdate.productID }
-                  })
-                }
-              } else {
-                return {
-                  status: 404,
-                  message: 'Inventory update failed!'
-                }
-              }
-            } else {
-              return {
-                status: 400,
-                message: 'Cart update failed!'
-              }
+          }
+        })
+        const newCartSaved = await CartSchema.create({ ...cart, orderNumber: carts ? carts.length : 0 })
+
+        if (newCartSaved && inventoryOfProduct) {
+          return {
+            status: 200,
+            message: `Success!`,
+            data: {
+              newCartSaved
             }
           }
         } else {
           return {
-            status: 404,
-            message: 'Can not find inventory to update!'
+            status: 400,
+            message: `Failed!`
           }
-        }
-      }
-    } else {
-      const carts = await CartSchema.findAll()
-      const newCart = await CartSchema.create({ ...cart, orderNumber: carts ? carts.length : 0 })
-      if (newCart) {
-        for (let i = 0; i < newCart.dataValues.products.length; i++) {
-          const productToUpdate = newCart.dataValues.products[i]
-          const inventoryToUpdate = await InventorySchema.decrement(
-            { quantity: productToUpdate.quantity },
-            { where: { productID: productToUpdate.productID } }
-          )
-          if (inventoryToUpdate) {
-            return {
-              status: 200,
-              message: `Cart created!`,
-              data: await CartSchema.findOne({ where: { userID: cart.userID } }),
-              meta: await InventorySchema.findOne({ where: { productID: productToUpdate.productID } })
-            }
-          } else {
-            return {
-              status: 400,
-              message: `Inventory update failed!`,
-              data: inventoryToUpdate
-            }
-          }
-        }
-      } else {
-        return {
-          status: 400,
-          message: `Cart create failed!`,
-          data: newCart
         }
       }
     }
@@ -109,9 +60,9 @@ export async function createNew(cart: Cart): Promise<ResponseStory> {
 }
 
 // Get by id
-export const getByID = async (id: number): Promise<ResponseStory> => {
+export const getByUserID = async (userID: number): Promise<ResponseStory> => {
   try {
-    const cart = await CartSchema.findByPk(id)
+    const cart = await CartSchema.findOne({ where: { userID: userID } })
     return {
       status: cart ? 200 : 404,
       message: cart ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
@@ -129,7 +80,7 @@ export const getAll = async (): Promise<ResponseStory> => {
   try {
     const carts = await CartSchema.findAll()
     return {
-      status: 200,
+      status: carts ? 200 : 400,
       data: carts
     }
   } catch (error) {
@@ -140,21 +91,79 @@ export const getAll = async (): Promise<ResponseStory> => {
 }
 
 // Update
-export const updateByID = async (cart: Cart): Promise<ResponseStory> => {
+export const updateByUserID = async (cart: Cart): Promise<ResponseStory> => {
   try {
-    const cartFind = await CartSchema.findByPk(cart.cartID)
-    if (!cartFind) {
+    const cartToUpdate = await CartSchema.findOne({
+      where: {
+        userID: cart.userID
+      }
+    })
+    if (cartToUpdate) {
+      const dbProducts = cartToUpdate.dataValues.products
+      const inputProducts = cart.products
+      for (let i = 0; i < dbProducts.length; i++) {
+        for (let j = 0; j < inputProducts.length; j++) {
+          if (dbProducts[i].productID === inputProducts[j].productID) {
+            // Update
+            // Before updating, we need to check whether the quantity is sufficient or not.
+            dbProducts[i].quantity += inputProducts[j].quantity
+            const inventoryOfProduct = await InventorySchema.findOne({
+              where: {
+                productID: dbProducts[i].productID,
+                quantity: {
+                  [Op.gte]: inputProducts[j].quantity
+                }
+              }
+            })
+            if (inventoryOfProduct) {
+              const inventoryUpdated = await InventorySchema.decrement(
+                { quantity: inputProducts[j].quantity },
+                { where: { productID: dbProducts[i].productID } }
+              )
+              const cartUpdated = await CartSchema.update({ products: dbProducts }, { where: { userID: cart.userID } })
+              if (inventoryUpdated && cartUpdated) {
+                return {
+                  status: 200,
+                  message: 'Success!'
+                }
+              } else {
+                return {
+                  status: 400,
+                  message: 'Failed!',
+                  data: {
+                    cart: cartUpdated,
+                    inventory: inventoryUpdated
+                  }
+                }
+              }
+            } else {
+              const inventoryToCheck = await InventorySchema.findOne({
+                where: {
+                  productID: dbProducts[i].productID
+                }
+              })
+              return {
+                status: inventoryToCheck ? 400 : 404,
+                message: inventoryToCheck
+                  ? inventoryToCheck.dataValues.quantity > 0
+                    ? `Số lượng trong kho hiện không đủ, vui lòng đặt số lượng <= ${inventoryToCheck?.dataValues.quantity}`
+                    : `Số lượng trong kho hiện đã hết`
+                  : 'không tìm thấy kho sản phẩm!'
+              }
+            }
+          }
+        }
+      }
       return {
-        status: 400,
-        message: `${NAMESPACE} not found!`
+        status: 404,
+        message: 'Không tìm thấy sản phẩm trong giỏ hàng!',
+        data: cartToUpdate
       }
     } else {
-      cartFind.set(cart)
-      const cartSaved = await cartFind.save()
       return {
-        status: cartSaved ? 200 : 400,
-        message: cartSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
-        data: cartSaved
+        status: 404,
+        message: `Không tìm thấy cartID: ${cart.cartID}!`,
+        data: cart
       }
     }
   } catch (error) {
@@ -165,18 +174,18 @@ export const updateByID = async (cart: Cart): Promise<ResponseStory> => {
 }
 
 // Delete
-export const deleteByID = async (id: number): Promise<ResponseStory> => {
+export const deleteByUserID = async (userID: number): Promise<ResponseStory> => {
   try {
-    const cartFind = await CartSchema.findByPk(id)
+    const cartFind = await CartSchema.findOne({ where: { userID: userID } })
     if (!cartFind) {
       return {
         status: 404,
-        message: `${NAMESPACE} not found!`
+        message: `UserID: ${userID} not found!`
       }
     } else {
       return {
         status: 200,
-        message: `${NAMESPACE} has been deleted!`,
+        message: `UserID: ${userID} has been deleted!`,
         data: await cartFind.destroy()
       }
     }
