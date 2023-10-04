@@ -12,6 +12,7 @@ export const addToCart = async (req: Request, res: Response) => {
       products: req.body.products
     }
     const cart = await services.getByUserID(cartRequest.userID)
+    
     if (cart.status === 200) {
       res.formatter.dynamicFind(await services.updateByUserID(cartRequest))
     } else {

@@ -1,7 +1,6 @@
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
 import CartSchema, { Cart } from '~/models/cart.model'
-import InventorySchema from '~/models/inventory.model'
 import * as inventoryService from '~/services/inventory.service'
 import logging from '~/utils/logging'
 
@@ -11,65 +10,22 @@ export const addToCart = async (cart: Cart): Promise<ResponseStory> => {
   try {
     const productsInput = cart.products
     for (let i = 0; i < productsInput.length; i++) {
-      const inventoryToUpdate = await InventorySchema.findOne({
-        where: {
-          productID: cart.products[i].productID
+      const inventoryUpdate = await inventoryService.updateReservationItemByUserID(
+        productsInput[i].productID,
+        cart.userID,
+        productsInput[i].quantity
+      )
+      if (inventoryUpdate) {
+        const cartCreated = await CartSchema.create(cart)
+        return {
+          status: cartCreated ? 200 : 400,
+          message: cartCreated ? 'Success!' : 'Failed!',
+          data: cartCreated
         }
-      })
-      if (inventoryToUpdate) {
-        if (inventoryToUpdate.getDataValue('quantity') >= cart.products[i].quantity) {
-          const reservations = inventoryToUpdate.getDataValue('reservations')
-          for (let k = 0; k < reservations.length; k++) {
-            if (reservations[k].userID === cart.userID) {
-              inventoryToUpdate.getDataValue('reservations')[k].quantity += cart.products[i].quantity
-              inventoryToUpdate.changed('reservations', true)
-              const inventoryUpdated = await inventoryToUpdate.save()
-
-              if (inventoryUpdated) {
-                // Update quantity's product cart
-                const cartCreated = await CartSchema.create(cart)
-                if (cartCreated) {
-                  return {
-                    status: 201,
-                    message: 'Cart created!',
-                    data: cartCreated,
-                    meta: inventoryUpdated
-                  }
-                } else {
-                  return {
-                    status: 400,
-                    message: 'Cart update failed!'
-                  }
-                }
-              } else {
-                return {
-                  status: 400,
-                  message: `Can not update reservation's inventory`
-                }
-              }
-            }
-          }
-          inventoryToUpdate.changed('reservations', true)
-          const inventoryCreated = await inventoryToUpdate.save()
-          if (inventoryCreated) {
-            const cartCreated = await CartSchema.create(cart)
-            return {
-              status: cartCreated ? 200 : 400,
-              message: cartCreated ? 'Success!' : 'Failed!',
-              data: cartCreated
-            }
-          } else {
-            return {
-              status: 400,
-              message: 'Failed to create inventory'
-            }
-          }
-        } else {
-          return {
-            status: 400,
-            message: 'Not enough response quantity',
-            data: inventoryToUpdate
-          }
+      } else {
+        return {
+          status: 400,
+          message: 'Failed to create inventory'
         }
       }
     }
