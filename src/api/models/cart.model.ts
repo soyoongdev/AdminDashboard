@@ -13,7 +13,9 @@ export interface Cart {
   orderNumber?: number
 }
 
-const CartSchema = sequelize.define<Model<Cart>>('carts', {
+interface CartInstance extends Model<Cart>, Cart {}
+
+const CartSchema = sequelize.define<CartInstance>('carts', {
   cartID: {
     type: INTEGER,
     primaryKey: true,

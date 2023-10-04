@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import * as controller from '~/controllers/cart.controller'
-import { requestValidationRules } from '../middleware/request-validator'
+import { requestValidationRules } from '~/middleware/request-validator'
 
 const router = Router()
 // 'userID', 'status', 'products'
@@ -24,7 +24,7 @@ router.post(
       .notEmpty()
       .withMessage('`products` can not be empty!')
   ]),
-  controller.createNew
+  controller.addToCart
 )
 router.get(
   '/find/:id',

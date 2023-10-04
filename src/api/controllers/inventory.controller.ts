@@ -10,6 +10,7 @@ export const createNew = async (req: Request, res: Response) => {
       brandID: req.body.brandID,
       productID: req.body.productID,
       quantity: req.body.quantity,
+      initCount: req.body.initCount,
       reservations: req.body.reservations
     }
     const inventoryNew = await services.createNew(inventoryRequest)
@@ -41,16 +42,17 @@ export const getAll = async (req: Request, res: Response) => {
 }
 
 // Update
-export const updateByID = async (req: Request, res: Response) => {
+export const updateByProductID = async (req: Request, res: Response) => {
   const inventoryRequest: Inventory = {
     inventoryID: parseInt(req.params.id),
     brandID: req.body.brandID,
     productID: req.body.productID,
     quantity: req.body.quantity,
+    initCount: req.body.initCount,
     reservations: req.body.reservations
   }
   try {
-    const inventoryFind = await services.updateByID(inventoryRequest)
+    const inventoryFind = await services.updateByProductID(inventoryRequest)
     return res.formatter.dynamicFind(inventoryFind)
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })

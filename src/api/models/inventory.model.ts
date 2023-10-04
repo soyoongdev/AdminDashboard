@@ -9,30 +9,59 @@ export interface Inventory {
   brandID: number
   productID: number
   quantity: number
+  initCount: number
   reservations: { userID: number; quantity: number }[] // { userID, quantity }
   orderNumber?: number
 }
 
-const InventorySchema = sequelize.define<Model<Inventory>>('inventories', {
-  inventoryID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+export interface InventoryInstance extends Model<Inventory>, Inventory {}
+
+const InventorySchema = sequelize.define<InventoryInstance>(
+  'inventories',
+  {
+    inventoryID: {
+      type: INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    brandID: {
+      type: INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    },
+    productID: {
+      type: INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    },
+    reservations: {
+      type: JSON,
+      defaultValue: '[]',
+      allowNull: true
+    },
+    quantity: {
+      type: INTEGER,
+      defaultValue: 0,
+      allowNull: true
+    },
+    initCount: {
+      type: INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    },
+    orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
   },
-  brandID: {
-    type: INTEGER
-  },
-  productID: {
-    type: INTEGER
-  },
-  reservations: {
-    type: JSON
-  },
-  quantity: {
-    type: INTEGER
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
-})
+  {
+    hooks: {
+      beforeSave: (self, options) => {
+        const totalValue = self.getDataValue('reservations').reduce((prev, curr, index, arr) => {
+          return prev + curr.quantity
+        }, 0)
+        self.setDataValue('quantity', self.getDataValue('initCount') - totalValue)
+      }
+    }
+  }
+)
 
 syncModel(InventorySchema)
 

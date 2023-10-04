@@ -2,17 +2,21 @@ import { Request, Response } from 'express'
 import { Cart } from '~/models/cart.model'
 import * as services from '~/services/cart.service'
 
-const NAMESPACE = 'Cart'
+const NAMESPACE = 'controllers/cart'
 
-export const createNew = async (req: Request, res: Response) => {
+export const addToCart = async (req: Request, res: Response) => {
   try {
     const cartRequest: Cart = {
       userID: req.body.userID,
       status: req.body.status,
       products: req.body.products
     }
-
-    return res.formatter.dynamicFind(await services.createNew(cartRequest))
+    const cart = await services.getByUserID(cartRequest.userID)
+    if (cart.status === 200) {
+      res.formatter.dynamicFind(await services.updateByUserID(cartRequest))
+    } else {
+      res.formatter.dynamicFind(await services.addToCart(cartRequest))
+    }
   } catch (error) {
     res.formatter.dynamicFind({ message: `${error}` })
   }

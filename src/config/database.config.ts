@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize'
 import keys from '~/utils/keys'
 import logging from '~/utils/logging'
 
-const NAMESPACE = '[config/database]'
+const NAMESPACE = 'config/database'
 
 const { dbname, username, password, host } = keys.mysql
 
