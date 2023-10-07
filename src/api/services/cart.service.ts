@@ -1,38 +1,13 @@
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
-import CartSchema, { Cart } from '~/models/cart.model'
-import * as inventoryService from '~/services/inventory.service'
+import CartSchema, { Cart, CartInstance } from '~/models/cart.model'
 import logging from '~/utils/logging'
 
 const NAMESPACE = 'service/cart'
 
-export const addToCart = async (cart: Cart): Promise<ResponseStory> => {
+export const addToCart = async (cartInput: Cart): Promise<CartInstance> => {
   try {
-    const productsInput = cart.products
-    for (let i = 0; i < productsInput.length; i++) {
-      const inventoryUpdate = await inventoryService.updateReservationItemByUserID(
-        productsInput[i].productID,
-        cart.userID,
-        productsInput[i].quantity
-      )
-      if (inventoryUpdate) {
-        const cartCreated = await CartSchema.create(cart)
-        return {
-          status: cartCreated ? 200 : 400,
-          message: cartCreated ? 'Success!' : 'Failed!',
-          data: cartCreated
-        }
-      } else {
-        return {
-          status: 400,
-          message: 'Failed to create inventory'
-        }
-      }
-    }
-    return {
-      status: 404,
-      message: 'Can not find inventory to update'
-    }
+    return await CartSchema.create(cartInput)
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
     logEvent(`${NAMESPACE} :: ${error}`)
@@ -41,84 +16,25 @@ export const addToCart = async (cart: Cart): Promise<ResponseStory> => {
 }
 
 // Update
-export const updateByUserID = async (cart: Cart): Promise<ResponseStory> => {
+export const updateCartByUserID = async (cartInput: Cart): Promise<ResponseStory> => {
   try {
-    const cartToUpdate = await CartSchema.findOne({
-      where: {
-        userID: cart.userID
-      }
-    })
-    if (cartToUpdate) {
-      const dbCartProducts = cartToUpdate.getDataValue('products')
-      /*
-      1 Update cart
-      2 Update reservation's inventory
-      */
-      for (let i = 0; i < dbCartProducts.length; i++) {
-        for (let j = 0; j < cart.products.length; j++) {
-          if (dbCartProducts[i].productID === cart.products[j].productID) {
-            const inventoryUpdated = await inventoryService.updateReservationItemByUserID(
-              cart.products[j].productID,
-              cart.userID,
-              cart.products[j].quantity
-            )
-            if (inventoryUpdated) {
-              // Update quantity's product cart
-              cartToUpdate.getDataValue('products')[i].quantity += cart.products[j].quantity
-              cartToUpdate.changed('products', true)
-              const cartUpdated = await cartToUpdate.save()
-              if (cartUpdated) {
-                return {
-                  status: 200,
-                  message: 'Cart updated!',
-                  data: cartUpdated,
-                  meta: inventoryUpdated
-                }
-              } else {
-                return {
-                  status: 400,
-                  message: 'Cart update failed!'
-                }
-              }
-            } else {
-              return {
-                status: 400,
-                message: `Can not update reservation's inventory`
-              }
-            }
-          }
-        }
-      }
-      return {
-        status: 404,
-        message: 'Can not find product in cart!'
-      }
-    } else {
-      return {
-        status: 404,
-        message: `Can not find cartID: ${cart.cartID}!`
-      }
-    }
+    return { status: 200 }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    logEvent(`${error}`)
-    throw error
+    logEvent(`${NAMESPACE} :: ${error}`)
+    throw new Error(`${NAMESPACE} :: ${error}`)
   }
 }
 
 // Get by id
-export const getByUserID = async (userID: number): Promise<ResponseStory> => {
+export const getByUserID = async (userID: number): Promise<CartInstance | null> => {
   try {
     const cart = await CartSchema.findOne({ where: { userID: userID } })
-    return {
-      status: cart ? 200 : 404,
-      message: cart ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,
-      data: cart
-    }
+    return cart
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    logEvent(`${error}`)
-    throw error
+    logEvent(`${NAMESPACE} :: ${error}`)
+    throw new Error(`${NAMESPACE} :: ${error}`)
   }
 }
 
@@ -132,8 +48,8 @@ export const getAll = async (): Promise<ResponseStory> => {
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    logEvent(`${error}`)
-    throw error
+    logEvent(`${NAMESPACE} :: ${error}`)
+    throw new Error(`${NAMESPACE} :: ${error}`)
   }
 }
 
@@ -155,7 +71,7 @@ export const deleteByUserID = async (userID: number): Promise<ResponseStory> => 
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
-    logEvent(`${error}`)
-    throw error
+    logEvent(`${NAMESPACE} :: ${error}`)
+    throw new Error(`${NAMESPACE} :: ${error}`)
   }
 }

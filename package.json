@@ -34,9 +34,7 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.1",
     "sequelize": "^6.33.0",
-    "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.7",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
@@ -52,6 +50,8 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "express-validator": "^7.0.1",
-    "otp-generator": "^4.0.1"
+    "otp-generator": "^4.0.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
   }
 }

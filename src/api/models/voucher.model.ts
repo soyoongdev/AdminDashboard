@@ -4,44 +4,50 @@ import { syncModel } from '.'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
-export interface Product {
-  productID?: number
-  categoryID: number
-  inventoryID: number
-  code?: string
-  name?: string
+export interface Voucher {
+  voucherID?: number
+  brandID: number
+  voucherTypeID: number
+  code: string
+  value: number
+  expiredDate: string
+  title: string
   desc?: string
-  releaseDate?: string
   orderNumber?: number
 }
 
-export interface ProductInstance extends Model<Product>, Product {}
+export interface VoucherInstance extends Model<Voucher>, Voucher {}
 
-const ProductSchema = sequelize.define<ProductInstance>('products', {
-  productID: {
+const VoucherSchema = sequelize.define<VoucherInstance>('vouchers', {
+  voucherID: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  categoryID: {
+  brandID: {
     type: INTEGER
   },
-  inventoryID: {
+  voucherTypeID: {
     type: INTEGER
   },
   code: {
     type: STRING
   },
-  name: {
+  value: {
+    type: INTEGER
+  },
+  expiredDate: {
+    type: STRING
+  },
+  title: {
     type: STRING
   },
   desc: {
     type: STRING
   },
-  releaseDate: { type: STRING, allowNull: true, defaultValue: Date.now() },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 
-syncModel(ProductSchema)
+syncModel(VoucherSchema)
 
-export default ProductSchema
+export default VoucherSchema

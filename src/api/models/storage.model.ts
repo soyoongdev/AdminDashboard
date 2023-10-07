@@ -4,26 +4,26 @@ import { syncModel } from '.'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
-export interface Cart {
-  cartID?: number
-  userID: number
+export interface Storage {
+  storageID?: number
+  brandID: number
   orderNumber?: number
 }
 
-export interface CartInstance extends Model<Cart>, Cart {}
+export interface StorageInstance extends Model<Storage>, Storage {}
 
-const CartSchema = sequelize.define<CartInstance>('carts', {
-  cartID: {
+const StorageSchema = sequelize.define<StorageInstance>('storages', {
+  storageID: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  userID: {
+  brandID: {
     type: INTEGER
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 
-syncModel(CartSchema)
+syncModel(StorageSchema)
 
-export default CartSchema
+export default StorageSchema

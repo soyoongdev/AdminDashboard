@@ -80,10 +80,9 @@ export const updateByProductID = async (inventory: Inventory): Promise<ResponseS
   }
 }
 
-export const updateReservationItemByUserID = async (
+export const updateReservationItemByProductID = async (
   productID: number,
-  userID: number,
-  quantity: number
+  item: { userID: number; quantity: number }
 ): Promise<InventoryInstance | undefined> => {
   try {
     const inventoryToUpdate = await InventorySchema.findOne({
@@ -91,18 +90,21 @@ export const updateReservationItemByUserID = async (
         productID: productID
       }
     })
+    let _model: any = {}
+    const reservations = inventoryToUpdate?.getDataValue('reservations') || []
     if (inventoryToUpdate) {
-      const reservations = inventoryToUpdate.getDataValue('reservations')
       for (let i = 0; i < reservations.length; i++) {
-        if (reservations[i].userID === userID && inventoryToUpdate.getDataValue('quantity') >= quantity) {
-          inventoryToUpdate.getDataValue('reservations')[i].quantity += quantity
+        if (reservations[i].userID === item.userID) {
+          inventoryToUpdate.getDataValue('reservations')[i].quantity += item.quantity
           inventoryToUpdate.changed('reservations', true) // Force change to update
-          return await inventoryToUpdate.save()
+          _model = await inventoryToUpdate.save()
         }
       }
     } else {
-      return undefined
+      _model = undefined
+      console.log('object')
     }
+    return _model
   } catch (error) {
     throw Error(`${error}`)
   }

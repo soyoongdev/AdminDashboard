@@ -38,17 +38,7 @@ router.get(
   controller.getByUserID
 )
 router.get('/find', controller.getAll)
-router.put(
-  '/:id',
-  requestValidationRules([
-    body('userID')
-      .notEmpty()
-      .withMessage('`userID` can not be empty!')
-      .isInt()
-      .withMessage('`userID` must be `integer` value type!')
-  ]),
-  controller.updateByUserID
-)
+
 router.delete(
   '/:id',
   requestValidationRules([
