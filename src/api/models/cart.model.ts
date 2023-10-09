@@ -1,5 +1,9 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import CartProductSchema from './cart_product.model'
+import ProductSchema from './product.model'
+import TransitionSchema from './transaction.model'
+import UserSchema from './user.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -22,6 +26,15 @@ const CartSchema = sequelize.define<CartInstance>('carts', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+CartSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+CartSchema.belongsToMany(ProductSchema, {
+  through: {
+    model: CartProductSchema
+  },
+  foreignKey: 'cartID'
+})
+CartSchema.hasMany(TransitionSchema, { foreignKey: 'cartID' })
 
 syncModel(CartSchema)
 

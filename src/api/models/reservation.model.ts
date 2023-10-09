@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import InventorySchema from './inventory.model'
+import UserSchema from './user.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -30,6 +32,9 @@ const ReservationSchema = sequelize.define<ReservationInstance>('reservations', 
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+ReservationSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+ReservationSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
 
 syncModel(ReservationSchema)
 

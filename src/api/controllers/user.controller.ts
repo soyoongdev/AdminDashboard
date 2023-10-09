@@ -18,7 +18,7 @@ export const createNew = async (req: Request, res: Response) => {
   }
   try {
     const newUser = await service.createNew(userRequest)
-    
+
     return res.formatter.dynamicFind({ ...newUser })
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })

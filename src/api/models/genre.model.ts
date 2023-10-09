@@ -1,6 +1,5 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
-import CategorySchema from './category.model'
+import sequelize, { syncModel } from '~/models'
 
 const { INTEGER, STRING } = DataTypes
 

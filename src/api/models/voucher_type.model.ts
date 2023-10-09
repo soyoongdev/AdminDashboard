@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import VoucherSchema from './voucher.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -26,6 +27,8 @@ const VoucherTypeSchema = sequelize.define<VoucherTypeInstance>('voucher_types',
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+VoucherTypeSchema.hasMany(VoucherSchema, { foreignKey: 'voucherTypeID' })
 
 syncModel(VoucherTypeSchema)
 

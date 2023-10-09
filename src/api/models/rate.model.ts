@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import ProductSchema from './product.model'
+import UserSchema from './user.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -48,6 +50,9 @@ const RateSchema = sequelize.define<RateInstance>('rates', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+RateSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+RateSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
 
 syncModel(RateSchema)
 

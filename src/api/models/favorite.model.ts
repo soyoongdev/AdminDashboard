@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import ProductSchema from './product.model'
+import UserSchema from './user.model'
 
 const { INTEGER, STRING } = DataTypes
 
@@ -26,6 +28,9 @@ const FavoriteSchema = sequelize.define<FavoriteInstance>('favorites', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+FavoriteSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+FavoriteSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
 
 syncModel(FavoriteSchema)
 

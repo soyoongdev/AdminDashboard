@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
 import GenreSchema from './genre.model'
 import ProductSchema from './product.model'
 
@@ -34,6 +34,9 @@ const CategorySchema = sequelize.define<CategoryInstance>('categories', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+CategorySchema.hasMany(ProductSchema, { foreignKey: 'categoryID' })
+CategorySchema.belongsTo(GenreSchema, { foreignKey: 'genreID' })
 
 syncModel(CategorySchema)
 

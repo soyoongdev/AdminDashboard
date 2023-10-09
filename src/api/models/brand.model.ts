@@ -1,5 +1,8 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import FollowerSchema from './follow.model'
+import StorageSchema from './storage.model'
+import VoucherSchema from './voucher.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -59,6 +62,10 @@ const BrandSchema = sequelize.define<BrandInstance>('brands', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+BrandSchema.hasMany(StorageSchema, { foreignKey: 'brandID' })
+BrandSchema.hasMany(VoucherSchema, { foreignKey: 'brandID' })
+BrandSchema.hasMany(FollowerSchema, { foreignKey: 'brandID' })
 
 syncModel(BrandSchema)
 

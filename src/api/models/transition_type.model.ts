@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import TransitionSchema from './transaction.model'
 
 const { INTEGER, STRING } = DataTypes
 
@@ -26,6 +27,8 @@ const TransitionTypeSchema = sequelize.define<TransitionTypeInstance>('transitio
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+TransitionTypeSchema.hasMany(TransitionSchema, { foreignKey: 'transitionTypeID' })
 
 syncModel(TransitionTypeSchema)
 

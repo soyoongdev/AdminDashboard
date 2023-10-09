@@ -1,5 +1,9 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import CartSchema from './cart.model'
+import OrderSchema from './order.model'
+import TransitionTypeSchema from './transition_type.model'
+import UserSchema from './user.model'
 
 const { INTEGER, STRING } = DataTypes
 
@@ -34,6 +38,11 @@ const TransitionSchema = sequelize.define<TransitionInstance>('transitions', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+TransitionSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+TransitionSchema.belongsTo(CartSchema, { foreignKey: 'cartID' })
+TransitionSchema.belongsTo(TransitionTypeSchema, { foreignKey: 'transitionTypeID' })
+TransitionSchema.hasOne(OrderSchema, { foreignKey: 'transitionID' })
 
 syncModel(TransitionSchema)
 

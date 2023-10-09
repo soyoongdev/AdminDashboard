@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import BrandSchema from './brand.model'
+import VoucherTypeSchema from './voucher_type.model'
 
 const { INTEGER, STRING, JSON } = DataTypes
 
@@ -46,6 +48,9 @@ const VoucherSchema = sequelize.define<VoucherInstance>('vouchers', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+VoucherSchema.belongsTo(VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
+VoucherSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
 
 syncModel(VoucherSchema)
 

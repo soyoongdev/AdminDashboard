@@ -1,5 +1,11 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import CartSchema from './cart.model'
+import FavoriteSchema from './favorite.model'
+import FollowerSchema from './follow.model'
+import RateSchema from './rate.model'
+import ReservationSchema from './reservation.model'
+import TransitionSchema from './transaction.model'
 
 const { INTEGER, BOOLEAN, STRING } = DataTypes
 
@@ -43,6 +49,13 @@ const UserSchema = sequelize.define<UserInstance>('users', {
   orderNumber: { type: INTEGER, defaultValue: 0 },
   isTemp: { type: BOOLEAN, allowNull: true, defaultValue: false }
 })
+
+UserSchema.hasMany(CartSchema, { foreignKey: 'userID' })
+UserSchema.hasMany(FavoriteSchema, { foreignKey: 'userID' })
+UserSchema.hasMany(RateSchema, { foreignKey: 'userID' })
+UserSchema.hasMany(FollowerSchema, { foreignKey: 'userID' })
+UserSchema.hasMany(TransitionSchema, { foreignKey: 'userID' })
+UserSchema.hasMany(ReservationSchema, { foreignKey: 'userID' })
 
 syncModel(UserSchema)
 

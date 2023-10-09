@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
 import { Product } from './product.model'
+import TransitionSchema from './transaction.model'
 
 const { INTEGER, STRING, DOUBLE, JSON } = DataTypes
 
@@ -37,6 +38,8 @@ const OrderSchema = sequelize.define<OrderInstance>('orders', {
   products: { type: JSON, defaultValue: [], allowNull: false },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+OrderSchema.belongsTo(TransitionSchema, { foreignKey: 'transitionID' })
 
 syncModel(OrderSchema)
 

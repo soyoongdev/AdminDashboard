@@ -1,99 +1,50 @@
-// TODO: DEFINE ASSOCIATION MODELS
+import { Model, ModelStatic, Sequelize, SyncOptions } from 'sequelize'
+import { dbconfig } from '~/config/database.config'
+import logging from '~/utils/logging'
 
-import BrandSchema from './brand.model'
-import CartSchema from './cart.model'
-import CartProductSchema from './cart_product.model'
-import CategorySchema from './category.model'
-import FavoriteSchema from './favorite.model'
-import FollowerSchema from './follow.model'
-import GenreSchema from './genre.model'
-import InventorySchema from './inventory.model'
-import OrderSchema from './order.model'
-import ProductSchema from './product.model'
-import RateSchema from './rate.model'
-import ReservationSchema from './reservation.model'
-import StorageSchema from './storage.model'
-import TransitionSchema from './transaction.model'
-import TransitionTypeSchema from './transition_type.model'
-import UserSchema from './user.model'
-import VoucherSchema from './voucher.model'
-import VoucherTypeSchema from './voucher_type.model'
+const NAMESPACE = 'model/index'
 
-// User
-UserSchema.hasMany(CartSchema, { foreignKey: 'userID' })
-UserSchema.hasMany(FavoriteSchema, { foreignKey: 'userID' })
-UserSchema.hasMany(RateSchema, { foreignKey: 'userID' })
-UserSchema.hasMany(FollowerSchema, { foreignKey: 'userID' })
-UserSchema.hasMany(TransitionSchema, { foreignKey: 'userID' })
-UserSchema.hasMany(ReservationSchema, { foreignKey: 'userID' })
+const { database, host, username, password } = dbconfig.development
 
-// Cart
-CartSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-CartSchema.belongsToMany(ProductSchema, {
-  through: {
-    model: CartProductSchema
-  },
-  foreignKey: 'cartID'
+const sequelize = new Sequelize(database, username, password, {
+  host: host,
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
-CartSchema.hasMany(TransitionSchema, { foreignKey: 'cartID' })
+;async () => {
+  try {
+    await sequelize
+      .authenticate()
+      .then(() => logging.info(NAMESPACE, 'Connection has been established successfully. 👏'))
+      .catch((error) => logging.error(NAMESPACE, `Unable to connect to the database: ${error}`))
+  } catch (error) {
+    logging.error(NAMESPACE, 'Failed to connect to database')
+  }
+}
 
-// Brand
-BrandSchema.hasMany(StorageSchema, { foreignKey: 'brandID' })
-BrandSchema.hasMany(FollowerSchema, { foreignKey: 'brandID' })
-BrandSchema.hasMany(VoucherSchema, { foreignKey: 'brandID' })
+export const closeConnection = async () => {
+  try {
+    await sequelize
+      .close()
+      .then(() => logging.info(NAMESPACE, 'Connection has been closed'))
+      .catch((error) => logging.error(NAMESPACE, `Unable to close the database: ${error}`))
+  } catch (error) {
+    logging.error(NAMESPACE, 'Failed to closed connect database')
+  }
+}
 
-// Voucher Type
-VoucherTypeSchema.hasMany(VoucherSchema, { foreignKey: 'voucherTypeID' })
+export const syncModel = async (model: ModelStatic<Model>, options?: SyncOptions): Promise<void> => {
+  try {
+    await model.sync(options) // Set force to true to recreate tables (use with caution in production)
+    console.log(`🛠️ ${model.name} model synced.`)
+  } catch (error) {
+    console.error(`Error syncing ${model.name} model:`, error)
+  }
+}
 
-// Voucher
-VoucherSchema.belongsTo(VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
-VoucherSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
-
-// Product
-ProductSchema.belongsToMany(CartSchema, {
-  through: {
-    model: CartProductSchema
-  },
-  foreignKey: 'productID'
-})
-ProductSchema.hasMany(FavoriteSchema, { foreignKey: 'productID' })
-ProductSchema.hasMany(RateSchema, { foreignKey: 'productID' })
-ProductSchema.belongsTo(CategorySchema, { foreignKey: 'categoryID' })
-ProductSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
-
-// Category Type
-CategorySchema.hasMany(ProductSchema, { foreignKey: 'categoryID' })
-CategorySchema.belongsTo(GenreSchema, { foreignKey: 'genreID' })
-
-// Transition
-TransitionSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-TransitionSchema.belongsTo(CartSchema, { foreignKey: 'cartID' })
-TransitionSchema.belongsTo(TransitionTypeSchema, { foreignKey: 'transitionTypeID' })
-TransitionSchema.hasOne(OrderSchema, { foreignKey: 'transitionID' })
-
-// Transition type
-TransitionTypeSchema.hasMany(TransitionSchema, { foreignKey: 'transitionTypeID' })
-
-// Order
-OrderSchema.belongsTo(TransitionSchema, { foreignKey: 'transitionID' })
-
-// Favorite
-FavoriteSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-FavoriteSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
-
-// Rate.
-RateSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-RateSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
-
-// Reservation
-ReservationSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-ReservationSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
-
-// Storage
-StorageSchema.hasMany(InventorySchema, { foreignKey: 'storageID' })
-StorageSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
-
-// Inventory
-InventorySchema.hasMany(ReservationSchema, { foreignKey: 'inventoryID' })
-InventorySchema.hasMany(ProductSchema, { foreignKey: 'inventoryID' })
-InventorySchema.belongsTo(StorageSchema, { foreignKey: 'storageID' })
+export default sequelize

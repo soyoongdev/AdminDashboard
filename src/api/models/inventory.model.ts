@@ -1,5 +1,8 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize, syncModel } from '~/config/sequelize.config'
+import sequelize, { syncModel } from '~/models'
+import ProductSchema from './product.model'
+import ReservationSchema from './reservation.model'
+import StorageSchema from './storage.model'
 
 const { INTEGER, JSON } = DataTypes
 
@@ -42,6 +45,10 @@ const InventorySchema = sequelize.define<InventoryInstance>('inventories', {
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
+
+InventorySchema.hasMany(ReservationSchema, { foreignKey: 'inventoryID' })
+InventorySchema.hasMany(ProductSchema, { foreignKey: 'inventoryID' })
+InventorySchema.belongsTo(StorageSchema, { foreignKey: 'storageID' })
 
 syncModel(InventorySchema)
 

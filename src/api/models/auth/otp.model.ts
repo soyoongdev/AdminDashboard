@@ -1,18 +1,20 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/sequelize.config'
+import sequelize from '~/models'
 import { syncModel } from '..'
 
 const { INTEGER, DATE, STRING } = DataTypes
 
 export interface OTP {
   otpID?: number
-  email?: string
-  otp?: string
-  orderNumber?: number
+  email: string
+  otp: string
   expiryDate: string
+  orderNumber?: number
 }
 
-const OTPSchema = sequelize.define<Model<OTP>>('otp', {
+export interface OTPInstance extends Model<OTP>, OTP {}
+
+const OTPSchema = sequelize.define<OTPInstance>('otp', {
   otpID: {
     type: INTEGER,
     primaryKey: true,
