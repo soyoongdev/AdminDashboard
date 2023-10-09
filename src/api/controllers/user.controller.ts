@@ -13,11 +13,12 @@ export const createNew = async (req: Request, res: Response) => {
     phone: req.body.phone,
     address: req.body.address,
     birthday: req.body.birthday,
-    roleID: req.body.roleID,
+    role: req.body.role,
     orderNumber: req.body.orderNumber
   }
   try {
     const newUser = await service.createNew(userRequest)
+    
     return res.formatter.dynamicFind({ ...newUser })
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
@@ -56,7 +57,7 @@ export const updateByID = async (req: Request, res: Response) => {
     phone: req.body.phone,
     address: req.body.address,
     birthday: req.body.birthday,
-    roleID: req.body.roleID,
+    role: req.body.role,
     orderNumber: req.body.orderNumber
   }
   try {

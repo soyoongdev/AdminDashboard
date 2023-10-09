@@ -1,32 +1,34 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/database.config'
-import { syncModel } from '.'
+import { sequelize, syncModel } from '~/config/sequelize.config'
 
 const { INTEGER, BOOLEAN, STRING } = DataTypes
 
 export interface User {
   userID?: number
-  roleID?: number
-  username?: string
+  role: 'user' | 'admin'
+  username: string
   fullname?: string
-  email?: string
-  password?: string
+  email: string
+  password: string
   avatar?: string
-  phone?: string
-  address?: string
+  phone: string
+  address: string
   birthday?: string
   orderNumber?: number
   isTemp?: boolean
 }
 
-const UserSchema = sequelize.define<Model<User>>('user', {
+export interface UserInstance extends Model<User>, User {}
+
+const UserSchema = sequelize.define<UserInstance>('users', {
   userID: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  roleID: {
-    type: INTEGER
+  role: {
+    type: STRING,
+    defaultValue: 'user'
   },
   username: {
     type: STRING

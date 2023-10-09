@@ -1,24 +1,24 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize, syncModel } from '~/config/sequelize.config'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING } = DataTypes
 
-export interface Follower {
-  followerID?: number
-  brandID: number
+export interface Favorite {
+  favoriteID?: number
+  productID: number
   userID: number
   orderNumber?: number
 }
 
-export interface FollowerInstance extends Model<Follower>, Follower {}
+export interface FavoriteInstance extends Model<Favorite>, Favorite {}
 
-const FollowerSchema = sequelize.define<FollowerInstance>('followers', {
-  followerID: {
+const FavoriteSchema = sequelize.define<FavoriteInstance>('favorites', {
+  favoriteID: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  brandID: {
+  productID: {
     type: INTEGER
   },
   userID: {
@@ -27,6 +27,6 @@ const FollowerSchema = sequelize.define<FollowerInstance>('followers', {
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 
-syncModel(FollowerSchema)
+syncModel(FavoriteSchema)
 
-export default FollowerSchema
+export default FavoriteSchema

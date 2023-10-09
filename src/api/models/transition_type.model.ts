@@ -1,20 +1,19 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize, syncModel } from '~/config/sequelize.config'
-import CategorySchema from './category.model'
 
 const { INTEGER, STRING } = DataTypes
 
-export interface Genre {
-  genreID?: number
+export interface TransitionType {
+  transitionTypeID?: number
   title: string
   desc?: string
   orderNumber?: number
 }
 
-export interface GenreInstance extends Model<Genre>, Genre {}
+export interface TransitionTypeInstance extends Model<TransitionType>, TransitionType {}
 
-const GenreSchema = sequelize.define<GenreInstance>('categories', {
-  genreID: {
+const TransitionTypeSchema = sequelize.define<TransitionTypeInstance>('transition_types', {
+  transitionTypeID: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
@@ -23,12 +22,11 @@ const GenreSchema = sequelize.define<GenreInstance>('categories', {
     type: STRING
   },
   desc: {
-    type: STRING,
-    allowNull: true
+    type: STRING
   },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 
-syncModel(GenreSchema)
+syncModel(TransitionTypeSchema)
 
-export default GenreSchema
+export default TransitionTypeSchema

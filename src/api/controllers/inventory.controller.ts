@@ -1,20 +1,10 @@
 import { Request, Response } from 'express'
-import { Inventory } from '~/models/inventory.model'
-import * as services from '~/services/inventory.service'
 
 const NAMESPACE = 'Inventory'
 
 export const createNew = async (req: Request, res: Response) => {
   try {
-    const inventoryRequest: Inventory = {
-      brandID: req.body.brandID,
-      productID: req.body.productID,
-      quantity: req.body.quantity,
-      initCount: req.body.initCount,
-      reservations: req.body.reservations
-    }
-    const inventoryNew = await services.createNew(inventoryRequest)
-    return res.formatter.dynamicFind(inventoryNew)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -22,10 +12,9 @@ export const createNew = async (req: Request, res: Response) => {
 
 // Get by id
 export const getByID = async (req: Request, res: Response) => {
-  const { id } = req.params
   try {
-    const inventory = await services.getByID(parseInt(id))
-    return res.formatter.dynamicFind(inventory)
+    const { id } = req.params
+    return res.formatter.dynamicFind({})
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -34,8 +23,7 @@ export const getByID = async (req: Request, res: Response) => {
 // Get all
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const inventories = await services.getAll()
-    return res.formatter.dynamicFind(inventories)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -43,17 +31,8 @@ export const getAll = async (req: Request, res: Response) => {
 
 // Update
 export const updateByProductID = async (req: Request, res: Response) => {
-  const inventoryRequest: Inventory = {
-    inventoryID: parseInt(req.params.id),
-    brandID: req.body.brandID,
-    productID: req.body.productID,
-    quantity: req.body.quantity,
-    initCount: req.body.initCount,
-    reservations: req.body.reservations
-  }
   try {
-    const inventoryFind = await services.updateByProductID(inventoryRequest)
-    return res.formatter.dynamicFind(inventoryFind)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -61,10 +40,8 @@ export const updateByProductID = async (req: Request, res: Response) => {
 
 // Delete
 export const deleteByID = async (req: Request, res: Response) => {
-  const { id } = req.params
   try {
-    const inventoryFind = await services.deleteByID(parseInt(id))
-    return res.formatter.dynamicFind(inventoryFind)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }

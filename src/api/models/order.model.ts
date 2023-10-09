@@ -1,23 +1,22 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/database.config'
-import { syncModel } from '.'
+import { sequelize, syncModel } from '~/config/sequelize.config'
+import { Product } from './product.model'
 
 const { INTEGER, STRING, DOUBLE, JSON } = DataTypes
 
 export interface Order {
   orderID?: number
+  transitionID: number
   cartID: number
   userID: number
-  statusID: number
-  paymentMethodID: number
   shipping: object
-  payment: any
-  amount: number
-  products?: []
+  products?: Product[]
   orderNumber?: number
 }
 
-const PaymentSchema = sequelize.define<Model<Order>>('orders', {
+export interface OrderInstance extends Model<Order>, Order {}
+
+const OrderSchema = sequelize.define<OrderInstance>('orders', {
   orderID: {
     type: INTEGER,
     primaryKey: true,
@@ -29,25 +28,16 @@ const PaymentSchema = sequelize.define<Model<Order>>('orders', {
   userID: {
     type: INTEGER
   },
-  statusID: {
-    type: INTEGER
-  },
-  paymentMethodID: {
+  transitionID: {
     type: INTEGER
   },
   shipping: {
     type: JSON
   },
-  amount: {
-    type: DOUBLE
-  },
-  payment: {
-    type: JSON
-  },
-  products: { type: JSON, allowNull: false },
+  products: { type: JSON, defaultValue: [], allowNull: false },
   orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
 })
 
-syncModel(PaymentSchema)
+syncModel(OrderSchema)
 
-export default PaymentSchema
+export default OrderSchema

@@ -24,7 +24,7 @@ export const createNew = async (user: User): Promise<ResponseStory> => {
 // Get by id
 export const getByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const product = await UserSchema.findByPk(id)
+    const product = await UserSchema.findOne({ where: { userID: id } })
     return {
       status: product ? 200 : 404,
       message: product ? `${NAMESPACE} founded!` : `${NAMESPACE} not found!`,

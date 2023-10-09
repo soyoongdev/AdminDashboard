@@ -1,6 +1,5 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/database.config'
-import { syncModel } from '.'
+import { sequelize, syncModel } from '~/config/sequelize.config'
 
 const { INTEGER, STRING, JSON } = DataTypes
 

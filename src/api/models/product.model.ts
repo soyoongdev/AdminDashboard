@@ -1,8 +1,9 @@
-import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/database.config'
-import { syncModel } from '.'
+'use strict'
 
-const { INTEGER, STRING, JSON } = DataTypes
+import { DataType, Model } from 'sequelize-typescript'
+import { sequelize, syncModel } from '~/config/sequelize.config'
+
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Product {
   productID?: number

@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import { sequelize } from '~/config/database.config'
-import { syncModel } from '.'
+import { sequelize, syncModel } from '~/config/sequelize.config'
+import GenreSchema from './genre.model'
+import ProductSchema from './product.model'
 
 const { INTEGER, STRING } = DataTypes
 

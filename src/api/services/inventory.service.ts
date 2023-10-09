@@ -85,25 +85,7 @@ export const updateReservationItemByProductID = async (
   item: { userID: number; quantity: number }
 ): Promise<InventoryInstance | undefined> => {
   try {
-    const inventoryToUpdate = await InventorySchema.findOne({
-      where: {
-        productID: productID
-      }
-    })
-    let _model: any = {}
-    const reservations = inventoryToUpdate?.getDataValue('reservations') || []
-    if (inventoryToUpdate) {
-      for (let i = 0; i < reservations.length; i++) {
-        if (reservations[i].userID === item.userID) {
-          inventoryToUpdate.getDataValue('reservations')[i].quantity += item.quantity
-          inventoryToUpdate.changed('reservations', true) // Force change to update
-          _model = await inventoryToUpdate.save()
-        }
-      }
-    } else {
-      _model = undefined
-      console.log('object')
-    }
+    const _model: any = {}
     return _model
   } catch (error) {
     throw Error(`${error}`)
@@ -113,16 +95,8 @@ export const updateReservationItemByProductID = async (
 // Delete
 export const deleteByID = async (id: number): Promise<ResponseStory> => {
   try {
-    const inventoryFind = await InventorySchema.findByPk(id)
-    if (!inventoryFind) {
-      return {
-        status: 404
-      }
-    } else {
-      return {
-        status: 200,
-        data: await inventoryFind.destroy()
-      }
+    return {
+      status: 200
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)

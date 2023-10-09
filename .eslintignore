@@ -2,6 +2,10 @@ node_modules/
 
 build/
 
+seeders
+
+models
+
 tsconfig.json
 
 package.json

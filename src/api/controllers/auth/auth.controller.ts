@@ -42,7 +42,7 @@ export const register = async (req: Request, res: Response) => {
     phone: req.body.phone,
     address: req.body.address,
     birthday: req.body.birthday,
-    roleID: req.body.roleID,
+    role: req.body.role,
     orderNumber: req.body.orderNumber
   }
   try {

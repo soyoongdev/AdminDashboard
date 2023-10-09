@@ -5,14 +5,12 @@ import logging from '~/utils/logging'
 
 const NAMESPACE = 'Product'
 
-export const createNew = async (product: Product): Promise<ResponseStory> => {
+export const createNew = async (productInput: Product): Promise<ResponseStory> => {
   try {
-    const length = (await ProductSchema.findAll()).length
-    const productNew = await ProductSchema.create({ ...product, orderNumber: length })
+    const product = await ProductSchema.create()
+    product
     return {
-      status: productNew ? 200 : 400,
-      message: productNew ? `${NAMESPACE} created successfully!` : `${NAMESPACE} create failed!`,
-      data: productNew
+      status: 200
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)
@@ -59,20 +57,8 @@ export const getAll = async (): Promise<ResponseStory> => {
 // Update
 export const updateByID = async (product: Product): Promise<ResponseStory> => {
   try {
-    const productFind = await ProductSchema.findByPk(product.productID)
-    if (!productFind) {
-      return {
-        status: 400,
-        message: `${NAMESPACE} not found!`
-      }
-    } else {
-      productFind.set(product)
-      const productSaved = await productFind.save()
-      return {
-        status: productSaved ? 200 : 400,
-        message: productSaved ? `${NAMESPACE} saved successfully!` : `${NAMESPACE} save failed!`,
-        data: productSaved
-      }
+    return {
+      status: 200
     }
   } catch (error) {
     logging.error(NAMESPACE, `${error}`)

@@ -1,12 +1,12 @@
-import { Sequelize } from 'sequelize'
-import keys from '~/utils/keys'
+import { Model, ModelStatic, Sequelize, SyncOptions } from 'sequelize'
 import logging from '~/utils/logging'
+import { dbconfig } from './db.config'
 
 const NAMESPACE = 'config/database'
 
-const { dbname, username, password, host } = keys.mysql
+const { database, host, username, password } = dbconfig.development
 
-const sequelize = new Sequelize(dbname, username, password, {
+export const sequelize = new Sequelize(database, username, password, {
   host: host,
   dialect: 'mysql',
   pool: {
@@ -16,8 +16,7 @@ const sequelize = new Sequelize(dbname, username, password, {
     idle: 10000
   }
 })
-
-const createConnection = async () => {
+;async () => {
   try {
     await sequelize
       .authenticate()
@@ -28,7 +27,7 @@ const createConnection = async () => {
   }
 }
 
-const closeConnection = async () => {
+export const closeConnection = async () => {
   try {
     await sequelize
       .close()
@@ -39,4 +38,11 @@ const closeConnection = async () => {
   }
 }
 
-export { closeConnection, createConnection, sequelize }
+export async function syncModel(model: ModelStatic<Model>, options?: SyncOptions): Promise<void> {
+  try {
+    await model.sync(options) // Set force to true to recreate tables (use with caution in production)
+    console.log(`🛠️ ${model.name} model synced.`)
+  } catch (error) {
+    console.error(`Error syncing ${model.name} model:`, error)
+  }
+}
