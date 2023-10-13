@@ -1,45 +1,48 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
-import { Product } from './product.model'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
+import CartSchema, { Cart } from './cart.model'
+import ProductSchema, { Product } from './product.model'
 import TransitionSchema from './transaction.model'
+import UserSchema, { User } from './user.model'
 
-const { INTEGER, STRING, DOUBLE, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Order {
   orderID?: number
   transitionID: number
-  cartID: number
-  userID: number
-  shipping: object
-  products?: Product[]
+  cart: Cart
+  user: User
+  products: Product[]
   orderNumber?: number
 }
 
-export interface OrderInstance extends Model<Order>, Order {}
-
-const OrderSchema = sequelize.define<OrderInstance>('orders', {
-  orderID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  cartID: {
-    type: INTEGER
-  },
-  userID: {
-    type: INTEGER
-  },
-  transitionID: {
-    type: INTEGER
-  },
-  shipping: {
-    type: JSON
-  },
-  products: { type: JSON, defaultValue: [], allowNull: false },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'orders',
+  modelName: 'Order'
 })
+class OrderSchema extends Model<Order> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare orderID: number
 
-OrderSchema.belongsTo(TransitionSchema, { foreignKey: 'transitionID' })
+  @Column({ type: JSON })
+  declare cart: CartSchema
+
+  @Column({ type: JSON })
+  declare user: UserSchema
+
+  @BelongsTo(() => TransitionSchema, { foreignKey: 'transitionID' })
+  @Column({ type: INTEGER })
+  declare transitionID: number
+
+  @Column({ type: JSON })
+  declare products: ProductSchema[]
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// OrderSchema.belongsTo(TransitionSchema, { foreignKey: 'transitionID' })
 
 syncModel(OrderSchema)
 

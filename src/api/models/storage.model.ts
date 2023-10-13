@@ -1,9 +1,8 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import BrandSchema from './brand.model'
-import InventorySchema from './inventory.model'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Storage {
   storageID?: number
@@ -11,22 +10,25 @@ export interface Storage {
   orderNumber?: number
 }
 
-export interface StorageInstance extends Model<Storage>, Storage {}
-
-const StorageSchema = sequelize.define<StorageInstance>('storages', {
-  storageID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  brandID: {
-    type: INTEGER
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'storages',
+  modelName: 'Storage'
 })
+class StorageSchema extends Model<Storage> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare storageID: number
 
-StorageSchema.hasMany(InventorySchema, { foreignKey: 'storageID' })
-StorageSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
+  @BelongsTo(() => BrandSchema, { foreignKey: 'brandID' })
+  @Column({ type: INTEGER })
+  declare brandID: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// StorageSchema.hasMany(InventorySchema, { foreignKey: 'storageID' })
+// StorageSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
 
 syncModel(StorageSchema)
 

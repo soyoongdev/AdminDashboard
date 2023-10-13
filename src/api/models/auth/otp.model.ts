@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize'
-import sequelize from '~/models'
+import sequelize from '~/models/index'
 import { syncModel } from '..'
 
 const { INTEGER, DATE, STRING } = DataTypes

@@ -1,11 +1,11 @@
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
-import CartSchema, { Cart, CartInstance } from '~/models/cart.model'
+import CartSchema, { Cart } from '~/models/cart.model'
 import logging from '~/utils/logging'
 
 const NAMESPACE = 'service/cart'
 
-export const addToCart = async (cartInput: Cart): Promise<CartInstance> => {
+export const addToCart = async (cartInput: Cart) => {
   try {
     return await CartSchema.create(cartInput)
   } catch (error) {
@@ -27,7 +27,7 @@ export const updateCartByUserID = async (cartInput: Cart): Promise<ResponseStory
 }
 
 // Get by id
-export const getByUserID = async (userID: number): Promise<CartInstance | null> => {
+export const getByUserID = async (userID: number) => {
   try {
     const cart = await CartSchema.findOne({ where: { userID: userID } })
     return cart

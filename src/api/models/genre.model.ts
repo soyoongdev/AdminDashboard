@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, STRING } = DataType
 
 export interface Genre {
   genreID?: number
@@ -10,23 +10,26 @@ export interface Genre {
   orderNumber?: number
 }
 
-export interface GenreInstance extends Model<Genre>, Genre {}
-
-const GenreSchema = sequelize.define<GenreInstance>('categories', {
-  genreID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  title: {
-    type: STRING
-  },
-  desc: {
-    type: STRING,
-    allowNull: true
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'genres',
+  modelName: 'Genre'
 })
+class GenreSchema extends Model<Genre> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare genreID: number
+
+  @Column({ type: STRING })
+  declare title: string
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// GenreSchema.hasMany(CategorySchema, { foreignKey: 'genreID' })
 
 syncModel(GenreSchema)
 

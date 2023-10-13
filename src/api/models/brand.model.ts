@@ -1,10 +1,7 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
-import FollowerSchema from './follow.model'
-import StorageSchema from './storage.model'
-import VoucherSchema from './voucher.model'
+import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Brand {
   brandID?: number
@@ -15,57 +12,58 @@ export interface Brand {
   phone?: string
   address?: string
   email: string
-  password?: string
+  password: string
   website?: string
   policy?: string
   orderNumber?: number
 }
 
-export interface BrandInstance extends Model<Brand>, Brand {}
-
-const BrandSchema = sequelize.define<BrandInstance>('brands', {
-  brandID: {
+@Table({
+  timestamps: true,
+  tableName: 'brands',
+  modelName: 'Brand'
+})
+class BrandSchema extends Model<Brand> {
+  @Column({
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true
-  },
-  brandType: {
-    type: STRING,
-    defaultValue: 'standard'
-  },
-  name: {
-    type: STRING
-  },
-  desc: {
-    type: STRING
-  },
-  logo: {
-    type: STRING
-  },
-  phone: {
-    type: STRING
-  },
-  address: {
-    type: STRING
-  },
-  email: {
-    type: STRING
-  },
-  password: {
-    type: STRING
-  },
-  website: {
-    type: STRING
-  },
-  policy: {
-    type: STRING
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
-})
+  })
+  declare brandID: number
 
-BrandSchema.hasMany(StorageSchema, { foreignKey: 'brandID' })
-BrandSchema.hasMany(VoucherSchema, { foreignKey: 'brandID' })
-BrandSchema.hasMany(FollowerSchema, { foreignKey: 'brandID' })
+  @Column({ type: STRING, values: ['standard', 'verified'] })
+  declare brandType: string
+
+  @Column({ type: STRING })
+  declare name: string
+
+  @Column({ type: STRING })
+  declare logo: string
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare phone?: number
+
+  @Column({ type: STRING })
+  declare address?: string
+
+  @Column({ type: STRING })
+  declare email: string
+
+  @Column({ type: STRING })
+  declare password: string
+
+  @Column({ type: STRING })
+  declare website?: string
+
+  @Column({ type: STRING })
+  declare policy?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber?: number
+}
 
 syncModel(BrandSchema)
 

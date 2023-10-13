@@ -1,42 +1,42 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import GenreSchema from './genre.model'
-import ProductSchema from './product.model'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, STRING } = DataType
 
 export interface Category {
   categoryID?: number
   genreID: number
-  options?: any[]
   title: string
   desc?: string
   orderNumber?: number
 }
 
-export interface CategoryInstance extends Model<Category>, Category {}
-
-const CategorySchema = sequelize.define<CategoryInstance>('categories', {
-  categoryID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  genreID: {
-    type: INTEGER
-  },
-  title: {
-    type: STRING
-  },
-  desc: {
-    type: STRING,
-    allowNull: true
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'categories',
+  modelName: 'Category'
 })
+class CategorySchema extends Model<Category> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare categoryID: number
 
-CategorySchema.hasMany(ProductSchema, { foreignKey: 'categoryID' })
-CategorySchema.belongsTo(GenreSchema, { foreignKey: 'genreID' })
+  @Column({ type: INTEGER })
+  @BelongsTo(() => GenreSchema, { foreignKey: 'genreID' })
+  declare genreID: number
+
+  @Column({ type: STRING })
+  declare title: string
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// CategorySchema.belongsTo(GenreSchema, { foreignKey: 'genreID' })
+// CategorySchema.hasMany(ProductSchema, { foreignKey: 'categoryID' })
 
 syncModel(CategorySchema)
 

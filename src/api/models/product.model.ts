@@ -1,13 +1,7 @@
-'use strict'
-
-import { DataType, Model } from 'sequelize-typescript'
-import sequelize, { syncModel } from '~/models'
-import CartSchema from './cart.model'
-import CartProductSchema from './cart_product.model'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import CategorySchema from './category.model'
-import FavoriteSchema from './favorite.model'
 import InventorySchema from './inventory.model'
-import RateSchema from './rate.model'
 
 const { INTEGER, STRING, JSON } = DataType
 
@@ -15,8 +9,8 @@ export interface Product {
   productID?: number
   categoryID: number
   inventoryID: number
-  code?: string
-  name?: string
+  code: string
+  name: string
   desc?: string
   releaseDate?: string
   orderNumber?: number
@@ -24,41 +18,49 @@ export interface Product {
 
 export interface ProductInstance extends Model<Product>, Product {}
 
-const ProductSchema = sequelize.define<ProductInstance>('products', {
-  productID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  categoryID: {
-    type: INTEGER
-  },
-  inventoryID: {
-    type: INTEGER
-  },
-  code: {
-    type: STRING
-  },
-  name: {
-    type: STRING
-  },
-  desc: {
-    type: STRING
-  },
-  releaseDate: { type: STRING, allowNull: true, defaultValue: Date.now() },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'products',
+  modelName: 'Product'
 })
+class ProductSchema extends Model<Product> {
+  @Column({ type: INTEGER, autoIncrement: true, primaryKey: true })
+  declare productID: number
 
-ProductSchema.belongsToMany(CartSchema, {
-  through: {
-    model: CartProductSchema
-  },
-  foreignKey: 'productID'
-})
-ProductSchema.hasMany(FavoriteSchema, { foreignKey: 'productID' })
-ProductSchema.hasMany(RateSchema, { foreignKey: 'productID' })
-ProductSchema.belongsTo(CategorySchema, { foreignKey: 'categoryID' })
-ProductSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
+  @BelongsTo(() => CategorySchema, { foreignKey: 'categoryID' })
+  @Column({ type: INTEGER })
+  declare categoryID: number
+
+  @BelongsTo(() => InventorySchema, { foreignKey: 'inventoryID' })
+  @Column({ type: INTEGER })
+  declare inventoryID: number
+
+  @Column({ type: STRING })
+  declare code: string
+
+  @Column({ type: STRING })
+  declare name: string
+
+  @Column({ type: STRING })
+  declare desc: string
+
+  @Column({ type: STRING })
+  declare releaseDate: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// ProductSchema.belongsToMany(CartSchema, {
+//   through: {
+//     model: CartProductSchema
+//   },
+//   foreignKey: 'productID'
+// })
+// ProductSchema.hasMany(FavoriteSchema, { foreignKey: 'productID' })
+// ProductSchema.hasMany(RateSchema, { foreignKey: 'productID' })
+// ProductSchema.belongsTo(CategorySchema, { foreignKey: 'categoryID' })
+// ProductSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
 
 syncModel(ProductSchema)
 

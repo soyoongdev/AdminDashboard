@@ -1,8 +1,7 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
-import TransitionSchema from './transaction.model'
+import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, STRING } = DataType
 
 export interface TransitionType {
   transitionTypeID?: number
@@ -11,24 +10,26 @@ export interface TransitionType {
   orderNumber?: number
 }
 
-export interface TransitionTypeInstance extends Model<TransitionType>, TransitionType {}
-
-const TransitionTypeSchema = sequelize.define<TransitionTypeInstance>('transition_types', {
-  transitionTypeID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  title: {
-    type: STRING
-  },
-  desc: {
-    type: STRING
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'transition_types',
+  modelName: 'TransitionType'
 })
+class TransitionTypeSchema extends Model<TransitionType> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare transitionTypeID: number
 
-TransitionTypeSchema.hasMany(TransitionSchema, { foreignKey: 'transitionTypeID' })
+  @Column({ type: STRING })
+  declare title: string
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// TransitionTypeSchema.hasMany(TransitionSchema, { foreignKey: 'transitionTypeID' })
 
 syncModel(TransitionTypeSchema)
 

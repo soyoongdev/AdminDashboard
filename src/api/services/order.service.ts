@@ -56,7 +56,7 @@ export const getAll = async (): Promise<ResponseStory> => {
 // Update
 export const updateByID = async (order: Order): Promise<ResponseStory> => {
   try {
-    const cartFind = await OrderSchema.findByPk(order.cartID)
+    const cartFind = await OrderSchema.findByPk(order.cart.cartID)
     if (!cartFind) {
       return {
         status: 400,

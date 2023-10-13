@@ -1,9 +1,9 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import BrandSchema from './brand.model'
 import VoucherTypeSchema from './voucher_type.model'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Voucher {
   voucherID?: number
@@ -17,40 +17,44 @@ export interface Voucher {
   orderNumber?: number
 }
 
-export interface VoucherInstance extends Model<Voucher>, Voucher {}
-
-const VoucherSchema = sequelize.define<VoucherInstance>('vouchers', {
-  voucherID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  brandID: {
-    type: INTEGER
-  },
-  voucherTypeID: {
-    type: INTEGER
-  },
-  code: {
-    type: STRING
-  },
-  value: {
-    type: INTEGER
-  },
-  expiredDate: {
-    type: STRING
-  },
-  title: {
-    type: STRING
-  },
-  desc: {
-    type: STRING
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'vouchers',
+  modelName: 'Voucher'
 })
+class VoucherSchema extends Model<Voucher> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare voucherID: number
 
-VoucherSchema.belongsTo(VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
-VoucherSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
+  @BelongsTo(() => BrandSchema, { foreignKey: 'brandID' })
+  @Column({ type: INTEGER })
+  declare brandID: number
+
+  @BelongsTo(() => VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
+  @Column({ type: INTEGER })
+  declare voucherTypeID: number
+
+  @Column({ type: STRING })
+  declare code: number
+
+  @Column({ type: STRING })
+  declare value: number
+
+  @Column({ type: STRING })
+  declare expiredDate: number
+
+  @Column({ type: STRING })
+  declare title: number
+
+  @Column({ type: STRING })
+  declare desc: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// VoucherSchema.belongsTo(VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
+// VoucherSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
 
 syncModel(VoucherSchema)
 

@@ -1,9 +1,9 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import InventorySchema from './inventory.model'
 import UserSchema from './user.model'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Reservation {
   reservationID?: number
@@ -13,28 +13,29 @@ export interface Reservation {
   orderNumber?: number
 }
 
-export interface ReservationInstance extends Model<Reservation>, Reservation {}
-
-const ReservationSchema = sequelize.define<ReservationInstance>('reservations', {
-  reservationID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  inventoryID: {
-    type: INTEGER
-  },
-  userID: {
-    type: INTEGER
-  },
-  quantity: {
-    type: INTEGER
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'reservations',
+  modelName: 'Reservation'
 })
+class ReservationSchema extends Model<Reservation> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare reservationID: number
 
-ReservationSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-ReservationSchema.belongsTo(InventorySchema, { foreignKey: 'inventoryID' })
+  @BelongsTo(() => InventorySchema, { foreignKey: 'inventoryID' })
+  @Column({ type: INTEGER })
+  declare inventoryID: number
+
+  @BelongsTo(() => UserSchema, { foreignKey: 'userID' })
+  @Column({ type: INTEGER })
+  declare userID: number
+
+  @Column({ type: INTEGER })
+  declare quantity: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber?: number
+}
 
 syncModel(ReservationSchema)
 

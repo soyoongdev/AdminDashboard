@@ -1,10 +1,9 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
+import BrandSchema from './brand.model'
 import ProductSchema from './product.model'
-import ReservationSchema from './reservation.model'
-import StorageSchema from './storage.model'
 
-const { INTEGER, JSON } = DataTypes
+const { INTEGER, JSON } = DataType
 
 export interface Inventory {
   inventoryID?: number
@@ -15,40 +14,36 @@ export interface Inventory {
   orderNumber?: number
 }
 
-export interface InventoryInstance extends Model<Inventory>, Inventory {}
-
-const InventorySchema = sequelize.define<InventoryInstance>('inventories', {
-  inventoryID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  storageID: {
-    type: INTEGER,
-    defaultValue: 0,
-    allowNull: false
-  },
-  productID: {
-    type: INTEGER,
-    defaultValue: 0,
-    allowNull: false
-  },
-  quantity: {
-    type: INTEGER,
-    defaultValue: 0,
-    allowNull: true
-  },
-  initQuantity: {
-    type: INTEGER,
-    defaultValue: 0,
-    allowNull: false
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'inventories',
+  modelName: 'Inventory'
 })
+class InventorySchema extends Model<Inventory> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare inventoryID: number
 
-InventorySchema.hasMany(ReservationSchema, { foreignKey: 'inventoryID' })
-InventorySchema.hasMany(ProductSchema, { foreignKey: 'inventoryID' })
-InventorySchema.belongsTo(StorageSchema, { foreignKey: 'storageID' })
+  @BelongsTo(() => BrandSchema, { foreignKey: 'storageID' })
+  @Column({ type: INTEGER })
+  declare storageID: number
+
+  @HasMany(() => ProductSchema, { foreignKey: 'productID' })
+  @Column({ type: INTEGER })
+  declare productID: number
+
+  @Column({ type: INTEGER })
+  declare quantity: number
+
+  @Column({ type: INTEGER })
+  declare initQuantity: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// InventorySchema.hasMany(ReservationSchema, { foreignKey: 'inventoryID' })
+// InventorySchema.hasMany(ProductSchema, { foreignKey: 'inventoryID' })
+// InventorySchema.belongsTo(StorageSchema, { foreignKey: 'storageID' })
 
 syncModel(InventorySchema)
 

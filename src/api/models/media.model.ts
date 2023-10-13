@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Media {
   mediaID?: number
@@ -11,27 +11,27 @@ export interface Media {
   orderNumber?: number
 }
 
-export interface MediaInstance extends Model<Media>, Media {}
-
-const MediaSchema = sequelize.define<MediaInstance>('medias', {
-  mediaID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  mediableID: {
-    type: INTEGER
-  },
-  url: {
-    type: JSON,
-    defaultValue: [],
-    allowNull: true
-  },
-  mediaType: {
-    type: STRING
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'inventories',
+  modelName: 'Inventory'
 })
+class MediaSchema extends Model<Media> {
+  @Column({ type: INTEGER })
+  declare mediaID: number
+
+  @Column({ type: INTEGER })
+  declare mediableID: number
+
+  @Column({ type: INTEGER })
+  declare url: string
+
+  @Column({ type: INTEGER })
+  declare mediaType: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
 
 syncModel(MediaSchema)
 

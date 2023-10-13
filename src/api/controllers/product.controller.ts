@@ -36,6 +36,7 @@ export const updateByID = async (req: Request, res: Response) => {
     const { id } = req.params
     const productRequest: Product = {
       productID: parseInt(id),
+      name: req.body.name,
       categoryID: req.body.categoryID,
       inventoryID: req.body.inventoryID,
       code: req.body.code

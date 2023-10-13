@@ -1,6 +1,6 @@
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
-import InventorySchema, { Inventory, InventoryInstance } from '~/models/inventory.model'
+import InventorySchema, { Inventory } from '~/models/inventory.model'
 import logging from '~/utils/logging'
 
 const NAMESPACE = 'Inventory'
@@ -83,7 +83,7 @@ export const updateByProductID = async (inventory: Inventory): Promise<ResponseS
 export const updateReservationItemByProductID = async (
   productID: number,
   item: { userID: number; quantity: number }
-): Promise<InventoryInstance | undefined> => {
+) => {
   try {
     const _model: any = {}
     return _model

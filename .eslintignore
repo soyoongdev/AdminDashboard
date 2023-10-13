@@ -1,13 +1,7 @@
 node_modules/
 
-build/
+dist/
 
-seeders
-
-models
-
-tsconfig.json
-
-package.json
+seeders/
 
 yarn.lock

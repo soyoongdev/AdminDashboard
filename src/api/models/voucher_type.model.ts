@@ -1,8 +1,8 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import VoucherSchema from './voucher.model'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface VoucherType {
   voucherTypeID?: number
@@ -11,22 +11,24 @@ export interface VoucherType {
   orderNumber?: number
 }
 
-export interface VoucherTypeInstance extends Model<VoucherType>, VoucherType {}
-
-const VoucherTypeSchema = sequelize.define<VoucherTypeInstance>('voucher_types', {
-  voucherTypeID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  title: {
-    type: STRING
-  },
-  desc: {
-    type: STRING
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'transition_types',
+  modelName: 'TransitionType'
 })
+class VoucherTypeSchema extends Model<VoucherType> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare voucherTypeID: number
+
+  @Column({ type: STRING })
+  declare title: string
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
 
 VoucherTypeSchema.hasMany(VoucherSchema, { foreignKey: 'voucherTypeID' })
 

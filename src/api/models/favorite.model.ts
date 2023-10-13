@@ -1,9 +1,9 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import ProductSchema from './product.model'
 import UserSchema from './user.model'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, STRING } = DataType
 
 export interface Favorite {
   favoriteID?: number
@@ -12,25 +12,29 @@ export interface Favorite {
   orderNumber?: number
 }
 
-export interface FavoriteInstance extends Model<Favorite>, Favorite {}
-
-const FavoriteSchema = sequelize.define<FavoriteInstance>('favorites', {
-  favoriteID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  productID: {
-    type: INTEGER
-  },
-  userID: {
-    type: INTEGER
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'favorites',
+  modelName: 'Favorite'
 })
+class FavoriteSchema extends Model<Favorite> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare favoriteID: number
 
-FavoriteSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-FavoriteSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
+  @BelongsTo(() => ProductSchema, { foreignKey: 'productID' })
+  @Column({ type: INTEGER })
+  declare productID: number
+
+  @BelongsTo(() => UserSchema, { foreignKey: 'userID' })
+  @Column({ type: INTEGER })
+  declare userID: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// FavoriteSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+// FavoriteSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
 
 syncModel(FavoriteSchema)
 

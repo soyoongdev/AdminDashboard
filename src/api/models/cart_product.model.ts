@@ -1,10 +1,11 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
+import CartSchema from './cart.model'
+import ProductSchema from './product.model'
 
-const { INTEGER, STRING } = DataTypes
+const { INTEGER, STRING } = DataType
 
 export interface CartProduct {
-  cartProductID?: number
   cartID: number
   productID: number
   quantity: number
@@ -13,34 +14,32 @@ export interface CartProduct {
   orderNumber?: number
 }
 
-export interface CartProductInstance extends Model<CartProduct>, CartProduct {}
-
-const CartProductSchema = sequelize.define<CartProductInstance>('cart_products', {
-  cartProductID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  cartID: {
-    type: INTEGER
-  },
-  productID: {
-    type: INTEGER
-  },
-  status: {
-    type: STRING,
-    defaultValue: 'available'
-  },
-  quantity: {
-    type: INTEGER,
-    defaultValue: 0
-  },
-  modifiedOn: {
-    type: STRING,
-    defaultValue: new Date().toISOString()
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'cart_products',
+  modelName: 'CartProduct'
 })
+class CartProductSchema extends Model<CartProduct> {
+  @BelongsTo(() => CartSchema, { foreignKey: 'cartID' })
+  @Column({ type: INTEGER })
+  declare cartID: number
+
+  @BelongsTo(() => ProductSchema, { foreignKey: 'productID' })
+  @Column({ type: INTEGER })
+  declare productID: number
+
+  @Column({ type: STRING, values: ['available', 'unavailable'] })
+  declare status: string
+
+  @Column({ type: INTEGER })
+  declare quantity: number
+
+  @Column({ type: STRING })
+  declare modifiedOn: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
 
 syncModel(CartProductSchema)
 

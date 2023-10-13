@@ -1,23 +1,11 @@
 import { Request, Response } from 'express'
-import { Order } from '~/models/order.model'
 import * as services from '~/services/order.service'
 
 const NAMESPACE = 'Order'
 
 export const createNew = async (req: Request, res: Response) => {
   try {
-    const orderRequest: Order = {
-      cartID: req.body.cartID,
-      userID: req.body.userID,
-      statusID: req.body.statusID,
-      paymentMethodID: req.body.paymentMethodID,
-      shipping: req.body.shipping,
-      payment: req.body.payment,
-      amount: req.body.amount,
-      products: req.body.products
-    }
-    const orderNew = await services.createNew(orderRequest)
-    return res.formatter.dynamicFind(orderNew)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     res.formatter.dynamicFind({ message: `${error}` })
   }
@@ -45,20 +33,9 @@ export const getAll = async (req: Request, res: Response) => {
 }
 // Update
 export const updateByID = async (req: Request, res: Response) => {
-  const orderRequest: Order = {
-    orderID: parseInt(req.params.id),
-    cartID: req.body.cartID,
-    userID: req.body.userID,
-    statusID: req.body.statusID,
-    paymentMethodID: req.body.paymentMethodID,
-    shipping: req.body.shipping,
-    payment: req.body.payment,
-    amount: req.body.amount,
-    products: req.body.products
-  }
   try {
-    const orderFind = await services.updateByID(orderRequest)
-    return res.formatter.dynamicFind(orderFind)
+    // const orderFind = await services.updateByID(orderRequest)
+    return res.formatter.dynamicFind({})
   } catch (error) {
     return res.formatter.dynamicFind({ message: `${error}` })
   }

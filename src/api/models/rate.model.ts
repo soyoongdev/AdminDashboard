@@ -1,58 +1,50 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize, { syncModel } from '~/models'
+import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
+import { syncModel } from '~/models/index'
 import ProductSchema from './product.model'
 import UserSchema from './user.model'
 
-const { INTEGER, STRING, JSON } = DataTypes
+const { INTEGER, STRING, JSON } = DataType
 
 export interface Rate {
   rateID?: number
   productID: number
   userID: number
-  media?: { id: number; url: string; orderNumber: number }[]
   title: string
   like: number
   desc?: string
   orderNumber?: number
 }
 
-export interface RateInstance extends Model<Rate>, Rate {}
-
-const RateSchema = sequelize.define<RateInstance>('rates', {
-  rateID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  productID: {
-    allowNull: false,
-    type: INTEGER
-  },
-  userID: {
-    type: INTEGER
-  },
-  media: {
-    type: JSON,
-    allowNull: true,
-    defaultValue: []
-  },
-  title: {
-    allowNull: false,
-    type: STRING
-  },
-  like: {
-    type: INTEGER,
-    defaultValue: 0
-  },
-  desc: {
-    type: STRING,
-    allowNull: true
-  },
-  orderNumber: { type: INTEGER, allowNull: true, defaultValue: 0 }
+@Table({
+  timestamps: true,
+  tableName: 'rates',
+  modelName: 'Rate'
 })
+class RateSchema extends Model<Rate> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare rateID: number
 
-RateSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
-RateSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
+  @BelongsTo(() => ProductSchema, { foreignKey: 'productID' })
+  declare productID: number
+
+  @BelongsTo(() => UserSchema, { foreignKey: 'userID' })
+  declare userID: number
+
+  @Column({ type: STRING })
+  declare title: string
+
+  @Column({ type: INTEGER })
+  declare like: number
+
+  @Column({ type: STRING })
+  declare desc?: string
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
+
+// RateSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
+// RateSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
 
 syncModel(RateSchema)
 

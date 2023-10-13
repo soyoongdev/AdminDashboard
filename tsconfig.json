@@ -1,16 +1,26 @@
 {
   "compilerOptions": {
     "module": "CommonJS", // Quy định output module được sử dụng
+    "moduleResolution": "Node",
     "target": "ES6", // Target output cho code
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "outDir": "dist", // Đường dẫn output cho thư mục build
     "esModuleInterop": true,
     "strict": true /* Enable all strict type-checking options. */,
-    "sourceMap": true,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": ".", // Đường dẫn base cho các import
     "paths": {
-      "~/*": ["src/api/*"], // Đường dẫn tương đối cho các import (alias)
-      "~/config/*": ["src/config/*"] // Đường dẫn tương đối cho các import (alias)
+      "~/*": ["src/*"],
+      "~/config/*": ["src/config/*"],
+      "~/models/*": ["src/api/models/*"],
+      "~/controllers/*": ["src/api/controllers/*"],
+      "~/helpers/*": ["src/api/helpers/*"],
+      "~/middleware/*": ["src/api/middleware/*"],
+      "~/routes/*": ["src/api/routes/*"],
+      "~/services/*": ["src/api/services/*"],
+      "~/utils/*": ["src/api/utils/*"],
+      "~/validations/*": ["src/api/validations/*"]
     }
   },
   "ts-node": {
