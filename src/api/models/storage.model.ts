@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import BrandSchema from './brand.model'
 
 const { INTEGER, STRING, JSON } = DataType
@@ -29,7 +29,5 @@ class StorageSchema extends Model<Storage> {
 
 // StorageSchema.hasMany(InventorySchema, { foreignKey: 'storageID' })
 // StorageSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
-
-syncModel(StorageSchema)
 
 export default StorageSchema

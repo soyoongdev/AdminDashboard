@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import GenreSchema from './genre.model'
 
 const { INTEGER, STRING } = DataType
@@ -37,7 +37,5 @@ class CategorySchema extends Model<Category> {
 
 // CategorySchema.belongsTo(GenreSchema, { foreignKey: 'genreID' })
 // CategorySchema.hasMany(ProductSchema, { foreignKey: 'categoryID' })
-
-syncModel(CategorySchema)
 
 export default CategorySchema

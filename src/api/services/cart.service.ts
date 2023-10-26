@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
 import CartSchema, { Cart } from '~/models/cart.model'

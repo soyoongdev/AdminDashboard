@@ -1,5 +1,4 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
 
 const { INTEGER, STRING } = DataType
 
@@ -30,7 +29,5 @@ class GenreSchema extends Model<Genre> {
 }
 
 // GenreSchema.hasMany(CategorySchema, { foreignKey: 'genreID' })
-
-syncModel(GenreSchema)
 
 export default GenreSchema

@@ -1,4 +1,4 @@
-export const dbconfig = {
+export const mysqlConfig = {
   development: {
     username: 'root',
     password: 'root@123',

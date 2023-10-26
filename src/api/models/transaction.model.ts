@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import CartSchema from './cart.model'
 import TransitionTypeSchema from './transition_type.model'
 import UserSchema from './user.model'
@@ -47,7 +47,5 @@ class TransitionSchema extends Model<Transition> {
 // TransitionSchema.belongsTo(CartSchema, { foreignKey: 'cartID' })
 // TransitionSchema.belongsTo(TransitionTypeSchema, { foreignKey: 'transitionTypeID' })
 // TransitionSchema.hasOne(OrderSchema, { foreignKey: 'transitionID' })
-
-syncModel(TransitionSchema)
 
 export default TransitionSchema

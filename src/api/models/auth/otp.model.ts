@@ -1,8 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
-import sequelize from '~/models/index'
-import { syncModel } from '..'
+import { Column, Table } from 'sequelize-typescript'
 
-const { INTEGER, DATE, STRING } = DataTypes
+const { INTEGER } = DataTypes
 
 export interface OTP {
   otpID?: number
@@ -12,20 +11,26 @@ export interface OTP {
   orderNumber?: number
 }
 
-export interface OTPInstance extends Model<OTP>, OTP {}
-
-const OTPSchema = sequelize.define<OTPInstance>('otp', {
-  otpID: {
-    type: INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  email: { type: STRING },
-  otp: { type: STRING },
-  orderNumber: { type: INTEGER, defaultValue: 0 },
-  expiryDate: { type: STRING }
+@Table({
+  timestamps: true,
+  tableName: 'carts',
+  modelName: 'Cart'
 })
+class OTPSchema extends Model<OTP> {
+  @Column({ type: INTEGER, primaryKey: true, autoIncrement: true })
+  declare otpID: number
 
-syncModel(OTPSchema)
+  @Column({ type: INTEGER })
+  declare email: string
+
+  @Column({ type: INTEGER })
+  declare otp: number
+
+  @Column({ type: INTEGER })
+  declare expiryDate: number
+
+  @Column({ type: INTEGER })
+  declare orderNumber: number
+}
 
 export default OTPSchema

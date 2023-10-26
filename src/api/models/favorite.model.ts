@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import ProductSchema from './product.model'
 import UserSchema from './user.model'
 
@@ -35,7 +35,5 @@ class FavoriteSchema extends Model<Favorite> {
 
 // FavoriteSchema.belongsTo(UserSchema, { foreignKey: 'userID' })
 // FavoriteSchema.belongsTo(ProductSchema, { foreignKey: 'productID' })
-
-syncModel(FavoriteSchema)
 
 export default FavoriteSchema

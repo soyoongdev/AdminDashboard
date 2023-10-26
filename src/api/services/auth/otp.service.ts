@@ -89,7 +89,7 @@ export const verifyAndDeleteOTP = async (emailCheck: string, otpCheck: string): 
       } else {
         if (userFind) {
           // await updateUserByEmail({ ...userFind, isTemp: false })
-          userFind.set({ ...userFind, isTemp: false })
+          userFind.set({ ...userFind, role: 'user', isTemp: false })
           await userFind.save()
         }
         await otpFind.destroy()

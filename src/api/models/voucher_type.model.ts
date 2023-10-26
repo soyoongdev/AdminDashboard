@@ -1,8 +1,6 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
-import VoucherSchema from './voucher.model'
 
-const { INTEGER, STRING, JSON } = DataType
+const { INTEGER, STRING } = DataType
 
 export interface VoucherType {
   voucherTypeID?: number
@@ -29,9 +27,5 @@ class VoucherTypeSchema extends Model<VoucherType> {
   @Column({ type: INTEGER })
   declare orderNumber: number
 }
-
-VoucherTypeSchema.hasMany(VoucherSchema, { foreignKey: 'voucherTypeID' })
-
-syncModel(VoucherTypeSchema)
 
 export default VoucherTypeSchema

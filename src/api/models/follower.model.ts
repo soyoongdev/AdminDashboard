@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
 import { BelongsTo, Column, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import BrandSchema from './brand.model'
 import UserSchema from './user.model'
 
@@ -33,7 +33,5 @@ class FollowerSchema extends Model<Follower> {
   @Column({ type: INTEGER })
   declare orderNumber: number
 }
-
-syncModel(FollowerSchema)
 
 export default FollowerSchema

@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from 'express'
 import methods, { Method, MethodStatus, MethodType } from './methods'
-import { Model } from 'sequelize'
 
 export interface ResponseStory {
   status?: MethodStatus
@@ -23,7 +23,7 @@ declare global {
 
 export const responseEnhancer =
   () =>
-  (req: Request, res: Response, next: NextFunction): void => {
+  (_req: Request, res: Response, next: NextFunction): void => {
     res.formatter = _generateFormatters(res)
     next()
   }

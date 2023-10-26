@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import InventorySchema from './inventory.model'
 import UserSchema from './user.model'
 
@@ -36,7 +36,5 @@ class ReservationSchema extends Model<Reservation> {
   @Column({ type: INTEGER })
   declare orderNumber?: number
 }
-
-syncModel(ReservationSchema)
 
 export default ReservationSchema

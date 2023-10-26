@@ -1,5 +1,4 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
 
 const { INTEGER, STRING, JSON } = DataType
 
@@ -32,7 +31,5 @@ class MediaSchema extends Model<Media> {
   @Column({ type: INTEGER })
   declare orderNumber: number
 }
-
-syncModel(MediaSchema)
 
 export default MediaSchema

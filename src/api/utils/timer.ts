@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 export const countdownTimer = async (seconds: number): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     let remainingTime = seconds
 
     const timer = setInterval(() => {

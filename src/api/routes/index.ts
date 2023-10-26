@@ -18,7 +18,8 @@ router.use('/carts', cartRoute)
 router.use('/orders', orderRoute)
 router.use('/inventories', inventoryRoute)
 
-router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line no-unused-vars
+router.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logEvent(err.message)
   logging.error(NAMESPACE, 'Not found with error: ' + err.message)
   return res.formatter.notFound({})

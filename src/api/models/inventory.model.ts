@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import BrandSchema from './brand.model'
 import ProductSchema from './product.model'
 
@@ -44,7 +44,5 @@ class InventorySchema extends Model<Inventory> {
 // InventorySchema.hasMany(ReservationSchema, { foreignKey: 'inventoryID' })
 // InventorySchema.hasMany(ProductSchema, { foreignKey: 'inventoryID' })
 // InventorySchema.belongsTo(StorageSchema, { foreignKey: 'storageID' })
-
-syncModel(InventorySchema)
 
 export default InventorySchema

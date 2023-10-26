@@ -1,9 +1,9 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import BrandSchema from './brand.model'
 import VoucherTypeSchema from './voucher_type.model'
 
-const { INTEGER, STRING, JSON } = DataType
+const { INTEGER, STRING } = DataType
 
 export interface Voucher {
   voucherID?: number
@@ -55,7 +55,5 @@ class VoucherSchema extends Model<Voucher> {
 
 // VoucherSchema.belongsTo(VoucherTypeSchema, { foreignKey: 'voucherTypeID' })
 // VoucherSchema.belongsTo(BrandSchema, { foreignKey: 'brandID' })
-
-syncModel(VoucherSchema)
 
 export default VoucherSchema

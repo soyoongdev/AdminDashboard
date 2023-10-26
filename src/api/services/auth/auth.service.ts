@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import bcrypt from 'bcrypt'
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
@@ -13,7 +14,8 @@ export const loginUser = async (user: User): Promise<ResponseStory> => {
   try {
     return {
       status: 0,
-      message: ''
+      message: '',
+      data: user
     }
   } catch (error) {
     logEvent(`${error}`)

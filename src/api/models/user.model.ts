@@ -1,5 +1,4 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
 
 const { INTEGER, BOOLEAN, STRING } = DataType
 
@@ -68,7 +67,5 @@ class UserSchema extends Model<User> {
 // UserSchema.hasMany(FollowerSchema, { foreignKey: 'userID' })
 // UserSchema.hasMany(TransitionSchema, { foreignKey: 'userID' })
 // UserSchema.hasMany(ReservationSchema, { foreignKey: 'userID' })
-
-syncModel(UserSchema)
 
 export default UserSchema

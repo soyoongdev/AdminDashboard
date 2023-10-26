@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import CartSchema from './cart.model'
 import ProductSchema from './product.model'
 
@@ -40,7 +40,5 @@ class CartProductSchema extends Model<CartProduct> {
   @Column({ type: INTEGER })
   declare orderNumber: number
 }
-
-syncModel(CartProductSchema)
 
 export default CartProductSchema

@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
+
 import UserSchema from './user.model'
 
 const { INTEGER, STRING, JSON } = DataType
@@ -39,7 +39,5 @@ class CartSchema extends Model<Cart> {
 //   foreignKey: 'cartID'
 // })
 // CartSchema.hasMany(TransitionSchema, { foreignKey: 'cartID' })
-
-syncModel(CartSchema)
 
 export default CartSchema

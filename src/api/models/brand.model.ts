@@ -1,5 +1,4 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
-import { syncModel } from '~/models/index'
 
 const { INTEGER, STRING, JSON } = DataType
 
@@ -64,7 +63,5 @@ class BrandSchema extends Model<Brand> {
   @Column({ type: INTEGER })
   declare orderNumber?: number
 }
-
-syncModel(BrandSchema)
 
 export default BrandSchema

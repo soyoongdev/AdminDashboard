@@ -1,3 +1,6 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable no-unused-vars */
+
 import logEvent from '~/helpers/log-event'
 import { ResponseStory } from '~/middleware/express-formatter'
 import InventorySchema, { Inventory } from '~/models/inventory.model'
